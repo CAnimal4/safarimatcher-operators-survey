@@ -1,0 +1,2311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SafariMatcher — Operator Survey</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- This page uses a separate CSS file for easier design iteration -->
+  <link rel="stylesheet" href="SafariMatcherSurveyWizard.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="logo-slot" aria-label="Safari Matcher logo">SafariMatcher&#8482;</div>
+      <div class="tagline" data-i18n="topbar.tagline">Operator Portal • No Ads • No Partnerships • No Kickbacks • No Bias</div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="wizard" id="wizard" aria-label="Operator survey wizard">
+      <header class="wizard-header">
+        <div class="wizard-title-row">
+          <div class="wizard-titles">
+            <h1 class="wizard-title" data-i18n="survey.title">Operator Survey — Animals &amp; Adventures</h1>
+            <p class="wizard-subtitle" data-i18n="survey.subtitle">
+              Quick, visual, month-by-month availability — designed for accuracy and trust.
+            </p>
+          </div>
+
+          <div class="wizard-meta" aria-label="Survey meta">
+            <span class="chip" data-i18n="meta.eta">Est. 6–10 min</span>
+            <span class="save-chip" id="saveChip" data-i18n="autosave.ready">Auto‑save on</span>
+          </div>
+        </div>
+
+        <nav class="wizard-stepper" aria-label="Progress">
+          <ol class="stepper-list" id="stepperList">
+            <li class="stepper-item" data-step="0"><span class="stepper-dot" aria-hidden="true"></span><span class="stepper-label" data-i18n="step.details">Details</span></li>
+            <li class="stepper-item" data-step="1"><span class="stepper-dot" aria-hidden="true"></span><span class="stepper-label" data-i18n="step.animals">Animals</span></li>
+            <li class="stepper-item" data-step="2"><span class="stepper-dot" aria-hidden="true"></span><span class="stepper-label" data-i18n="step.adventures">Adventures</span></li>
+            <li class="stepper-item" data-step="3"><span class="stepper-dot" aria-hidden="true"></span><span class="stepper-label" data-i18n="step.review">Review</span></li>
+          </ol>
+          <div class="stepper-bar" aria-hidden="true">
+            <div class="stepper-fill" id="stepperFill"></div>
+          </div>
+        </nav>
+      </header>
+
+      <form id="operatorSurveyForm" class="wizard-form" novalidate action="https://formspree.io/f/xeeeajdg" method="POST">
+        <!-- Formspree-friendly summary (kept hidden). This prevents thousands of matrix fields cluttering the dashboard. -->
+        <textarea id="messageField" name="message" style="display:none"></textarea>
+
+        <div class="wizard-body">
+          <!-- STEP 1: DETAILS -->
+          <section class="wizard-step is-active" data-step="0" aria-label="Details">
+            <div class="step-card">
+              <div class="step-head">
+                <h2 class="step-title" data-i18n="details.title">Camp / lodge details</h2>
+                <p class="step-hint" data-i18n="details.intro">
+                  Fill what matters; skip anything that doesn’t apply. You can come back later — we auto‑save on this device.
+                </p>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="operatorName" data-i18n="label.operator_name">Your name &amp; role</label>
+                  <input id="operatorName" name="operatorName" type="text" required
+                         placeholder="e.g. Jane Doe, Reservations Manager" data-i18n-placeholder="placeholder.operator_name" autocomplete="name">
+                  <div class="field-help" data-i18n="help.operator_name">So we know who to contact if anything is unclear.</div>
+                </div>
+
+                <div class="field">
+                  <label for="campName" data-i18n="label.camp_name">Camp / lodge name</label>
+                  <input id="campName" name="campName" type="text" required
+                         placeholder="e.g. Mara Plains Camp" data-i18n-placeholder="placeholder.camp_name" autocomplete="organization">
+                  <div class="field-help" data-i18n="help.camp_name">Use the public name travellers will recognize.</div>
+                </div>
+
+                <div class="field">
+                  <label for="contactEmail" data-i18n="label.contact_email">Contact email</label>
+                  <input id="contactEmail" name="email" type="email" required
+                         placeholder="you@example.com" data-i18n-placeholder="placeholder.contact_email" autocomplete="email">
+                  <div class="field-help" data-i18n="help.contact_email">We never sell this. It’s only for matching + follow‑ups.</div>
+                </div>
+
+                <div class="field">
+                  <label for="website" data-i18n="label.website">Website (optional)</label>
+                  <input id="website" name="website" type="url" placeholder="https://&hellip;" data-i18n-placeholder="placeholder.website" inputmode="url">
+                  <div class="field-help" data-i18n="help.website">Helpful for verifying details and improving match quality.</div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="notes" data-i18n="label.notes">Anything we should note? (optional)</label>
+                <textarea id="notes" name="notes" rows="3"
+                          placeholder="E.g. seasonal notes, private concession rules, migrations, recent reintroductions, etc." data-i18n-placeholder="placeholder.notes"></textarea>
+                <div class="field-help" data-i18n="help.notes">Short is fine. Bullet points are welcome.</div>
+              </div>
+            </div>
+
+            <div class="step-footer">
+              <div class="tip" role="note">
+                <span class="tip-dot" aria-hidden="true"></span>
+                <span class="tip-text" data-i18n="tip.details">
+                  Next: choose “Yes / No / Depends” per row, then set a probability. “Depends” opens a month view.
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 2: ANIMALS -->
+          <section class="wizard-step" data-step="1" aria-label="Animals">
+            <div class="step-card">
+              <div class="step-head">
+                <h2 class="step-title" data-i18n="animals.title">Animals — likelihood</h2>
+                <p class="step-hint" data-i18n="animals.help_short">Percentages are guest‑level chances on a typical stay — not guarantees.</p>
+              </div>
+
+              <div class="matrix-top">
+                <p class="mode-help small-note" data-i18n="animals.mode_help">
+                  Choose <span class="pill-inline pill-yes">Yes</span>, <span class="pill-inline pill-no">No</span>, or <span class="pill-inline pill-yes">Depends on Month</span>.
+                  If you choose Depends, a month grid opens for that one row.
+                </p>
+              </div>
+
+              <div class="matrix-wrapper" role="region" aria-label="Animals matrix">
+                <table class="matrix-table" aria-describedby="animalsHelp">
+                  <thead>
+                    <tr>
+                      <th class="sticky-col" data-i18n="table.animal">Animal</th>
+                      <th style="width:220px" data-i18n="table.answer">Answer</th>
+                      <th style="width:160px" data-i18n="table.probability">Probability</th>
+                    </tr>
+                  </thead>
+                  <tbody id="animalsBody" data-group="animals"></tbody>
+                </table>
+              </div>
+              <p id="animalsHelp" class="small-note" data-i18n="animals.help">
+                Percentages are guest-level chances on a typical stay — not guarantees.
+              </p>
+            </div>
+          </section>
+
+          <!-- STEP 3: ADVENTURES -->
+          <section class="wizard-step" data-step="2" aria-label="Adventures">
+            <div class="step-card">
+              <div class="step-head">
+                <h2 class="step-title" data-i18n="adventures.title">Adventures — availability</h2>
+                <p class="step-hint" data-i18n="adventures.help_short">If something is seasonal, reflect that here.</p>
+              </div>
+
+              <div class="matrix-top">
+                <p class="mode-help small-note" data-i18n="adventures.mode_help">
+                  Choose <span class="pill-inline pill-yes">Yes</span>, <span class="pill-inline pill-no">No</span>, or <span class="pill-inline pill-yes">Depends on Month</span>.
+                  If you choose Depends, a month grid opens for that one row.
+                </p>
+              </div>
+
+              <div class="matrix-wrapper" role="region" aria-label="Adventures matrix">
+                <table class="matrix-table" aria-describedby="adventuresHelp">
+                  <thead>
+                    <tr>
+                      <th class="sticky-col" data-i18n="table.adventure">Adventure</th>
+                      <th style="width:220px" data-i18n="table.answer">Answer</th>
+                      <th style="width:160px" data-i18n="table.probability">Probability</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adventuresBody" data-group="adventures"></tbody>
+                </table>
+              </div>
+              <p id="adventuresHelp" class="small-note" data-i18n="adventures.help">
+                If something is seasonal (e.g. boating depends on water levels), reflect that here.
+              </p>
+            </div>
+          </section>
+
+          <!-- STEP 4: REVIEW + SUBMIT -->
+          <section class="wizard-step" data-step="3" aria-label="Review and submit">
+            <div class="step-card">
+              <div class="step-head">
+                <h2 class="step-title" data-i18n="review.title">Review</h2>
+                <p class="step-hint" data-i18n="review.subtitle">A quick summary before you submit.</p>
+              </div>
+
+              <div class="review-grid">
+                <div class="review-card">
+                  <div class="review-card-head">
+                    <h3 class="review-card-title" data-i18n="review.details">Details</h3>
+                    <button type="button" class="link-btn" data-go-step="0" data-i18n="review.edit">Edit</button>
+                  </div>
+                  <dl class="review-dl">
+                    <div class="review-row"><dt data-i18n="pretty.operator">Operator</dt><dd id="reviewOperator">—</dd></div>
+                    <div class="review-row"><dt data-i18n="pretty.camp">Camp/Lodge</dt><dd id="reviewCamp">—</dd></div>
+                    <div class="review-row"><dt data-i18n="pretty.email">Email</dt><dd id="reviewEmail">—</dd></div>
+                    <div class="review-row"><dt data-i18n="pretty.website">Website</dt><dd id="reviewWebsite">—</dd></div>
+                  </dl>
+                </div>
+
+                <div class="review-card">
+                  <div class="review-card-head">
+                    <h3 class="review-card-title" data-i18n="pretty.animals">Animals</h3>
+                    <button type="button" class="link-btn" data-go-step="1" data-i18n="review.edit">Edit</button>
+                  </div>
+                  <div class="review-stats" id="reviewAnimalsStats"></div>
+                </div>
+
+                <div class="review-card">
+                  <div class="review-card-head">
+                    <h3 class="review-card-title" data-i18n="pretty.adventures">Adventures</h3>
+                    <button type="button" class="link-btn" data-go-step="2" data-i18n="review.edit">Edit</button>
+                  </div>
+                  <div class="review-stats" id="reviewAdventuresStats"></div>
+                </div>
+              </div>
+
+              <div class="submit-box">
+                <div class="submit-box-title" data-i18n="submit.ready">Ready to submit?</div>
+                <p class="small-note" data-i18n="submit.note">
+                  By submitting, you confirm these are your best estimates today. You can update them anytime.
+                </p>
+
+                <div class="legal-links">
+                  <a href="https://safarimatcher.com/privacy-policy" target="_blank" rel="noopener" data-i18n="link.privacy">Privacy Policy</a>
+                  <span class="dot" aria-hidden="true">•</span>
+                  <a href="https://safarimatcher.com/terms-of-service" target="_blank" rel="noopener" data-i18n="link.terms">Terms of Service</a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="wizard-nav" aria-label="Wizard navigation">
+          <button type="button" class="btn-secondary" id="prevBtn" data-i18n="nav.back">Back</button>
+          <div class="nav-spacer"></div>
+          <button type="button" class="btn-secondary" id="nextBtn" data-i18n="nav.next">Next</button>
+          <button type="submit" class="btn-primary is-hidden" id="submitBtn" data-i18n="submit.button">Submit survey</button>
+        </footer>
+
+        <div class="form-status-wrap">
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Language picker (fixed) -->
+  <div id="langSwitcher">
+    <label id="langSwitcherLabel" for="languageSelect" data-i18n="language.label">Language</label>
+    <select id="languageSelect" aria-label="Select language" data-i18n-aria-label="language.aria_label">
+      <option value="en">English</option>
+      <option value="sw">Kiswahili</option>
+      <option value="ar">العربية</option>
+      <option value="fr">Français</option>
+      <option value="ha">Hausa</option>
+      <option value="yo">Yorùbá</option>
+    </select>
+  </div>
+
+  <!-- Month side-sheet -->
+  <div class="sheet-overlay is-hidden" id="monthSheetOverlay" role="dialog" aria-modal="true" aria-labelledby="monthSheetTitle">
+    <div class="sheet-backdrop" data-action="close" aria-hidden="true"></div>
+
+    <div class="sheet" role="document" tabindex="-1">
+      <div class="sheet-header">
+        <div class="sheet-header-text">
+          <div class="sheet-kicker" data-i18n="sheet.kicker">Monthly breakdown</div>
+          <div class="sheet-title" id="monthSheetTitle">—</div>
+          <div class="sheet-subtitle" data-i18n="sheet.subtitle">Only adjust months that differ from the base probability.</div>
+        </div>
+
+        <button type="button" class="icon-btn" id="sheetCloseBtn" data-i18n-aria-label="sheet.close_aria" aria-label="Close">×</button>
+      </div>
+
+      <div class="sheet-body" id="monthSheetBody"></div>
+
+      <div class="sheet-footer">
+        <button type="button" class="btn-secondary" id="sheetResetBtn" data-i18n="sheet.reset">Reset overrides</button>
+        <div class="nav-spacer"></div>
+        <button type="button" class="btn-primary" id="sheetDoneBtn" data-i18n="sheet.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const CONFIG = {
+      API_BASE: '',
+      FORM_ENDPOINT: 'https://formspree.io/f/xeeeajdg',
+      MAILTO_FALLBACK_TO: ''
+    };
+
+    const months = [
+      { id:'jan', label:'Jan' },
+      { id:'feb', label:'Feb' },
+      { id:'mar', label:'Mar' },
+      { id:'apr', label:'Apr' },
+      { id:'may', label:'May' },
+      { id:'jun', label:'Jun' },
+      { id:'jul', label:'Jul' },
+      { id:'aug', label:'Aug' },
+      { id:'sep', label:'Sep' },
+      { id:'oct', label:'Oct' },
+      { id:'nov', label:'Nov' },
+      { id:'dec', label:'Dec' }
+    ];
+
+    // Full animal list
+    const animals = [
+      { id:'african-lion',           label:'African Lion' },
+      { id:'elephant',               label:'Elephant' },
+      { id:'leopard',                label:'Leopard' },
+      { id:'rhinoceros',             label:'Rhinoceros' },
+      { id:'cape-buffalo',           label:'Cape Buffalo' },
+      { id:'cheetah',                label:'Cheetah' },
+      { id:'spotted-hyena',          label:'Spotted Hyena' },
+      { id:'giraffe',                label:'Giraffe' },
+      { id:'hippopotamus',           label:'Hippopotamus' },
+      { id:'zebra',                  label:'Zebra' },
+      { id:'wildebeest',             label:'Wildebeest' },
+      { id:'kudu',                   label:'Kudu' },
+      { id:'sable-antelope',         label:'Sable Antelope' },
+      { id:'giant-eland',            label:'Giant Eland' },
+      { id:'gemsbok-oryx',           label:'Gemsbok (Oryx)' },
+      { id:'red-hartebeest-topi',    label:'Red Hartebeest / Topi' },
+      { id:'waterbuck',              label:'Waterbuck' },
+      { id:'impala',                 label:'Impala' },
+      { id:'warthog',                label:'Warthog' },
+      { id:'crocodile',              label:'Crocodile' },
+      { id:'serval-caracal',         label:'Serval / Caracal' },
+      { id:'baboon',                 label:'Baboon' },
+      { id:'vervet-monkey',          label:'Vervet Monkey' },
+      { id:'meerkat',                label:'Meerkat' },
+      { id:'mountain-gorilla',       label:'Mountain Gorilla' },
+      { id:'chimpanzee',             label:'Chimpanzee' },
+      { id:'pangolin',               label:'Pangolin' },
+      { id:'jackal-wild-dog',        label:'Jackal/African Wild Dog' },
+      { id:'ostrich',                label:'Ostrich' },
+      { id:'secretary-bird',         label:'Secretary Bird' }
+    ];
+
+    // Full adventures list
+    const adventures = [
+      { id:'great-migration',                 label:'Great Migration' },
+      { id:'night-drive',                     label:'Night Drive' },
+      { id:'guided-walking-safari',           label:'Guided Walking Safari' },
+      { id:'wilderness-hike',                 label:'Wilderness Hike' },
+      { id:'boat-pontoon-safari',             label:'Boat or Pontoon Safari' },
+      { id:'mokoro-dugout-excursion',         label:'Mokoro (Dug-Out Canoe) Excursion' },
+      { id:'canoe-rafting-safari',            label:'Canoe or Rafting Safari' },
+      { id:'hot-air-balloon-flight',          label:'Hot-Air Balloon Flight' },
+      { id:'helicopter-safari',               label:'Helicopter Safari' },
+      { id:'fixed-wing-scenic-flight',        label:'Fixed-Wing Scenic Flight' },
+      { id:'horseback-safari',                label:'Horseback Safari' },
+      { id:'animal-tracking-on-foot',         label:'Animal Tracking on Foot' },
+      { id:'great-ape-trekking',              label:'Great-Ape Trekking' },
+      { id:'photographic-safari-workshop',    label:'Photographic Safari Workshop' },
+      { id:'sleep-out-fly-camping',           label:'Sleep-Out Under the Stars / Fly Camping' },
+      { id:'cultural-village-visit-dance',    label:'Cultural Village Visit & Traditional Dance' },
+      { id:'multi-day-trek',                  label:'Multi-Day Trek (Mountain or Backpacking)' },
+      { id:'zip-line',                        label:'Zip Line' },
+      { id:'trip-to-beach',                   label:'Trip to Beach' },
+      { id:'pool',                            label:'Pool' }
+    ];
+
+    const DEFAULT_LANG = 'en';
+    const LANG_STORAGE_KEY = 'safarimatcher_lang';
+    const SUPPORTED_LANGS = ['en', 'sw', 'ar', 'fr', 'ha', 'yo'];
+
+    // Draft autosave
+    const DRAFT_KEY = 'safarimatcher_operator_survey_draft_v3';
+    const DRAFT_VERSION = 3;
+
+    const translations = {
+      en: {
+        'language.label':'Language',
+        'language.aria_label':'Select language',
+
+        'topbar.tagline':'Operator Portal • No Ads • No Partnerships • No Kickbacks • No Bias',
+
+        'survey.title':'Operator Survey — Animals & Adventures',
+        'survey.subtitle':'Quick, visual, month-by-month availability — designed for accuracy and trust.',
+        'meta.eta':'Est. 6–10 min',
+
+        'autosave.ready':'Auto‑save on',
+        'autosave.saving':'Saving…',
+        'autosave.saved':'Saved',
+        'autosave.restored':'Draft restored',
+
+        'step.details':'Details',
+        'step.animals':'Animals',
+        'step.adventures':'Adventures',
+        'step.review':'Review',
+
+        'nav.back':'Back',
+        'nav.next':'Next',
+
+        'details.title':'Camp / lodge details',
+        'details.intro':'Fill what matters; skip anything that doesn’t apply. You can come back later — we auto‑save on this device.',
+        'help.operator_name':'So we know who to contact if anything is unclear.',
+        'help.camp_name':'Use the public name travellers will recognize.',
+        'help.contact_email':'We never sell this. It’s only for matching + follow‑ups.',
+        'help.website':'Helpful for verifying details and improving match quality.',
+        'help.notes':'Short is fine. Bullet points are welcome.',
+        'tip.details':'Next: choose “Yes / No / Depends” per row, then set a probability. “Depends” opens a month view.',
+
+        'label.operator_name':'Your name & role',
+        'placeholder.operator_name':'e.g. Jane Doe, Reservations Manager',
+        'label.camp_name':'Camp / lodge name',
+        'placeholder.camp_name':'e.g. Mara Plains Camp',
+        'label.contact_email':'Contact email',
+        'placeholder.contact_email':'you@example.com',
+        'label.website':'Website (optional)',
+        'placeholder.website':'https://…',
+        'label.notes':'Anything we should note? (optional)',
+        'placeholder.notes':'E.g. seasonal notes, private concession rules, migrations, recent reintroductions, etc.',
+
+        'animals.title':'Animals — likelihood',
+        'animals.help_short':'Percentages are guest‑level chances on a typical stay — not guarantees.',
+        'adventures.title':'Adventures — availability',
+        'adventures.help_short':'If something is seasonal, reflect that here.',
+
+        'animals.mode_help':'Choose {yes}, {no}, or {depends}. If you choose Depends, a month view opens for that row.',
+        'adventures.mode_help':'Choose {yes}, {no}, or {depends}. If you choose Depends, a month view opens for that row.',
+        'mode.yes':'Yes',
+        'mode.no':'No',
+        'mode.depends':'Depends on Month',
+
+        'row.months':'Months',
+        'row.edit_months':'Edit months',
+        'row.overrides':'Overrides',
+        'row.no_overrides':'No month overrides',
+
+        'table.animal':'Animal',
+        'table.adventure':'Adventure',
+        'table.answer':'Answer',
+        'table.probability':'Probability',
+
+        'animals.help':'Percentages are guest-level chances on a typical stay — not guarantees.',
+        'adventures.help':'If something is seasonal (e.g. boating depends on water levels), reflect that here.',
+
+        'sheet.kicker':'Monthly breakdown',
+        'sheet.subtitle':'Only adjust months that differ from the base probability.',
+        'sheet.reset':'Reset overrides',
+        'sheet.done':'Done',
+        'sheet.close_aria':'Close',
+
+        'review.title':'Review',
+        'review.subtitle':'A quick summary before you submit.',
+        'review.details':'Details',
+        'review.edit':'Edit',
+        'review.yes':'Yes',
+        'review.no':'No',
+        'review.depends':'Depends',
+        'review.items':'items',
+        'review.optional':'(optional)',
+
+        'submit.ready':'Ready to submit?',
+        'submit.button':'Submit survey',
+        'submit.note':'By submitting, you confirm these are your best estimates today. You can update them anytime.',
+
+        'link.privacy':'Privacy Policy',
+        'link.terms':'Terms of Service',
+
+        'status.missing':'Please fill in your name, camp/lodge name, and email.',
+        'status.details_required':'Please complete the required details before continuing.',
+        'status.submitting':'Submitting your answers...',
+        'status.saved':'Thank you - your survey has been saved. You can always update it later.',
+        'status.mailto':'Thanks - your email app should open to send a summary. For full results, please use the configured submission endpoint.',
+        'status.not_configured':'Submission is not configured yet. Please contact SafariMatcher to enable the survey link.',
+        'status.failed':'We could not submit your survey. Please try again, or contact SafariMatcher support.',
+
+        'subject.prefix':'SafariMatcher Operator Survey - ',
+        'mail.note1':'NOTE: This email fallback does not include the full matrix.',
+        'mail.note2':'Please ask SafariMatcher to enable a secure submission endpoint (recommended).',
+
+        'pretty.title':'SafariMatcher Operator Survey',
+        'pretty.operator':'Operator',
+        'pretty.camp':'Camp/Lodge',
+        'pretty.email':'Email',
+        'pretty.website':'Website',
+        'pretty.notes':'Notes',
+        'pretty.animals':'Animals',
+        'pretty.adventures':'Adventures',
+        'pretty.yes':'Yes (single probability)',
+        'pretty.depends':'Depends on Month',
+        'pretty.no':'No',
+        'pretty.none':'(No selections provided)',
+        'pretty.submitted':'Submitted',
+        'pretty.base':'Base',
+        'pretty.overrides':'Overrides',
+        'pretty.no_overrides':'(no overrides)',
+
+        'month.jan':'Jan','month.feb':'Feb','month.mar':'Mar','month.apr':'Apr','month.may':'May','month.jun':'Jun',
+        'month.jul':'Jul','month.aug':'Aug','month.sep':'Sep','month.oct':'Oct','month.nov':'Nov','month.dec':'Dec'
+      },
+      sw: {
+        'language.label':'Lugha','language.aria_label':'Chagua lugha',
+        'topbar.tagline':'Portal ya Waendeshaji • Hakuna Matangazo • Hakuna Ushirika • Hakuna Kickback • Hakuna Upendeleo',
+
+        'survey.title':'Utafiti wa Mwendeshaji — Wanyama na Matukio',
+        'survey.subtitle':'Upatikanaji wa mwezi kwa mwezi, kwa njia safi na ya kuaminika.',
+        'meta.eta':'Dakika 6–10 (kadirio)',
+
+        'autosave.ready':'Hifadhi kiotomatiki iko tayari',
+        'autosave.saving':'Inahifadhi…',
+        'autosave.saved':'Imehifadhiwa',
+        'autosave.restored':'Rasimu imerejeshwa',
+
+        'step.details':'Maelezo',
+        'step.animals':'Wanyama',
+        'step.adventures':'Matukio',
+        'step.review':'Kagua',
+
+        'nav.back':'Rudi',
+        'nav.next':'Endelea',
+
+        'details.title':'Maelezo ya kambi / lodge',
+        'details.intro':'Jaza muhimu; ruka kisichohusika. Unaweza kurudi baadaye — tunahifadhi kwenye kifaa hiki.',
+        'help.operator_name':'Ili tujue wa kuwasiliana naye tukihitaji ufafanuzi.',
+        'help.camp_name':'Tumia jina la umma ambalo wasafiri watalitambua.',
+        'help.contact_email':'Hatuuzi hii. Ni kwa ulinganishaji na mawasiliano tu.',
+        'help.website':'Husaidia kuthibitisha maelezo na kuboresha ulinganishaji.',
+        'help.notes':'Fupi inatosha. Nukta zinakaribishwa.',
+        'tip.details':'Kisha: chagua “Ndio / Hapana / Inategemea” kwa kila mstari, kisha weka uwezekano. “Inategemea” hufungua miezi.',
+
+        'label.operator_name':'Jina na jukumu lako','placeholder.operator_name':'mf. Jane Doe, Meneja wa Uhifadhi',
+        'label.camp_name':'Jina la kambi / lodge','placeholder.camp_name':'mf. Mara Plains Camp',
+        'label.contact_email':'Barua pepe ya mawasiliano','placeholder.contact_email':'you@example.com',
+        'label.website':'Tovuti (hiari)','placeholder.website':'https://…',
+        'label.notes':'Kuna chochote cha kuzingatia? (hiari)',
+        'placeholder.notes':'Mf. maelezo ya msimu, sheria za concession binafsi, uhamaji, kurejeshwa kwa spishi, n.k.',
+
+        'animals.title':'Wanyama — uwezekano',
+        'animals.help_short':'Asilimia ni nafasi za kawaida kwa mgeni — si uhakika.',
+        'adventures.title':'Matukio — upatikanaji',
+        'adventures.help_short':'Kama jambo ni la msimu, lionyeshe hapa.',
+
+        'animals.mode_help':'Chagua {yes}, {no}, au {depends}. Ukichagua Inategemea, mwonekano wa miezi hufunguka kwa mstari huo.',
+        'adventures.mode_help':'Chagua {yes}, {no}, au {depends}. Ukichagua Inategemea, mwonekano wa miezi hufunguka kwa mstari huo.',
+        'mode.yes':'Ndio','mode.no':'Hapana','mode.depends':'Inategemea Mwezi',
+
+        'row.months':'Miezi',
+        'row.edit_months':'Hariri miezi',
+        'row.overrides':'Mabadiliko',
+        'row.no_overrides':'Hakuna mabadiliko ya miezi',
+
+        'table.animal':'Mnyama','table.adventure':'Tukio','table.answer':'Jibu','table.probability':'Uwezekano',
+
+        'animals.help':'Asilimia ni nafasi za kawaida kwa mgeni — si uhakika.',
+        'adventures.help':'Kama jambo ni la msimu (mf. boating hutegemea kiwango cha maji), lionyeshe hapa.',
+
+        'sheet.kicker':'Mgawanyo wa kila mwezi',
+        'sheet.subtitle':'Badilisha tu miezi inayotofautiana na msingi.',
+        'sheet.reset':'Rudisha mabadiliko',
+        'sheet.done':'Sawa',
+        'sheet.close_aria':'Funga',
+
+        'review.title':'Kagua',
+        'review.subtitle':'Muhtasari mfupi kabla ya kutuma.',
+        'review.details':'Maelezo',
+        'review.edit':'Hariri',
+        'review.yes':'Ndio',
+        'review.no':'Hapana',
+        'review.depends':'Inategemea',
+        'review.items':'vipengele',
+        'review.optional':'(hiari)',
+
+        'submit.ready':'Uko tayari kutuma?',
+        'submit.button':'Wasilisha utafiti',
+        'submit.note':'Kwa kuwasilisha, unathibitisha haya ni makadirio yako bora ya sasa. Unaweza kusasisha wakati wowote.',
+
+        'link.privacy':'Sera ya Faragha',
+        'link.terms':'Masharti ya Huduma',
+
+        'status.missing':'Tafadhali jaza jina lako, jina la kambi/lodge, na barua pepe.',
+        'status.details_required':'Tafadhali kamilisha maelezo muhimu kabla ya kuendelea.',
+        'status.submitting':'Tunawasilisha majibu yako...','status.saved':'Asante — utafiti wako umehifadhiwa.',
+        'status.mailto':'Asante — programu yako ya barua pepe inapaswa kufunguka kutuma muhtasari.',
+        'status.not_configured':'Uwasilishaji haujasanidiwa bado. Tafadhali wasiliana na SafariMatcher.',
+        'status.failed':'Hatukuweza kuwasilisha utafiti wako. Tafadhali jaribu tena.',
+
+        'subject.prefix':'Utafiti wa Mwendeshaji SafariMatcher - ',
+        'mail.note1':'KUMBUKA: Njia hii ya barua pepe haijumuishi gridi kamili.',
+        'mail.note2':'Omba SafariMatcher iwezeshe endpoint salama ya uwasilishaji.',
+
+        'pretty.title':'Utafiti wa Mwendeshaji SafariMatcher','pretty.operator':'Mwendeshaji','pretty.camp':'Kambi/Lodge',
+        'pretty.email':'Barua pepe','pretty.website':'Tovuti','pretty.notes':'Maelezo','pretty.animals':'Wanyama','pretty.adventures':'Matukio',
+        'pretty.yes':'Ndio (uwezekano mmoja)','pretty.depends':'Inategemea Mwezi','pretty.no':'Hapana','pretty.none':'(Hakuna chaguo zilizotolewa)',
+        'pretty.submitted':'Iliwasilishwa','pretty.base':'Msingi','pretty.overrides':'Marekebisho','pretty.no_overrides':'(hakuna marekebisho)',
+
+        'month.jan':'Jan','month.feb':'Feb','month.mar':'Mac','month.apr':'Apr','month.may':'Mei','month.jun':'Jun',
+        'month.jul':'Jul','month.aug':'Ago','month.sep':'Sep','month.oct':'Okt','month.nov':'Nov','month.dec':'Des'
+      },
+      ar: {
+        'language.label':'اللغة','language.aria_label':'اختر اللغة',
+        'topbar.tagline':'بوابة المشغل • بدون إعلانات • بدون شراكات • بدون عمولات • بدون تحيز',
+
+        'survey.title':'استبيان المشغل — الحيوانات والتجارب',
+        'survey.subtitle':'توفر شهري واضح وسهل — مصمم للدقة والثقة.',
+        'meta.eta':'٦–١٠ دقائق تقريبًا',
+
+        'autosave.ready':'الحفظ التلقائي مفعّل',
+        'autosave.saving':'جارٍ الحفظ…',
+        'autosave.saved':'تم الحفظ',
+        'autosave.restored':'تم استعادة المسودة',
+
+        'step.details':'التفاصيل',
+        'step.animals':'الحيوانات',
+        'step.adventures':'التجارب',
+        'step.review':'مراجعة',
+
+        'nav.back':'رجوع',
+        'nav.next':'التالي',
+
+        'details.title':'تفاصيل المخيم / النُزل',
+        'details.intro':'املأ المهم فقط وتجاوز ما لا ينطبق. يمكنك العودة لاحقًا — نحفظ تلقائيًا على هذا الجهاز.',
+        'help.operator_name':'لنعرف من نتواصل معه إذا احتجنا توضيحًا.',
+        'help.camp_name':'استخدم الاسم العام الذي يعرفه المسافرون.',
+        'help.contact_email':'لن نبيع هذا أبدًا. للاستخدام في المطابقة والمتابعة فقط.',
+        'help.website':'يساعد على التحقق من التفاصيل وتحسين جودة المطابقة.',
+        'help.notes':'حتى الملاحظات القصيرة مفيدة. النقاط مرحب بها.',
+        'tip.details':'التالي: اختر “نعم / لا / يعتمد” لكل صف، ثم حدد الاحتمال. “يعتمد” يفتح عرض الأشهر.',
+
+        'label.operator_name':'اسمك ودورك','placeholder.operator_name':'مثال: Jane Doe، مدير الحجوزات',
+        'label.camp_name':'اسم المخيم / النُزل','placeholder.camp_name':'مثال: Mara Plains Camp',
+        'label.contact_email':'بريد التواصل','placeholder.contact_email':'you@example.com',
+        'label.website':'الموقع الإلكتروني (اختياري)','placeholder.website':'https://…',
+        'label.notes':'أي ملاحظات يجب أن نعرفها؟ (اختياري)','placeholder.notes':'مثال: ملاحظات موسمية، قواعد امتياز خاص، هجرات، إعادة توطين حديثة...',
+
+        'animals.title':'الحيوانات — الاحتمال',
+        'animals.help_short':'النِّسب تمثل فرصًا معتادة للضيف وليست ضمانًا.',
+        'adventures.title':'التجارب — التوفر',
+        'adventures.help_short':'إذا كان النشاط موسميًا فاذكره هنا.',
+
+        'animals.mode_help':'اختر {yes} أو {no} أو {depends}. إذا اخترت يعتمد فسيُفتح عرض الأشهر لهذا الصف.',
+        'adventures.mode_help':'اختر {yes} أو {no} أو {depends}. إذا اخترت يعتمد فسيُفتح عرض الأشهر لهذا الصف.',
+        'mode.yes':'نعم','mode.no':'لا','mode.depends':'يعتمد على الشهر',
+
+        'row.months':'الأشهر',
+        'row.edit_months':'تعديل الأشهر',
+        'row.overrides':'تعديلات',
+        'row.no_overrides':'لا توجد تعديلات شهرية',
+
+        'table.animal':'الحيوان','table.adventure':'التجربة','table.answer':'الإجابة','table.probability':'الاحتمال',
+
+        'animals.help':'النِّسب تمثل فرصًا معتادة للضيف خلال إقامة نموذجية وليست ضمانًا.',
+        'adventures.help':'إذا كان النشاط موسميًا (مثل القوارب حسب مستوى المياه) فاذكره هنا.',
+
+        'sheet.kicker':'تفصيل شهري',
+        'sheet.subtitle':'عدّل فقط الأشهر المختلفة عن الاحتمال الأساسي.',
+        'sheet.reset':'إعادة ضبط التعديلات',
+        'sheet.done':'تم',
+        'sheet.close_aria':'إغلاق',
+
+        'review.title':'مراجعة',
+        'review.subtitle':'ملخص سريع قبل الإرسال.',
+        'review.details':'التفاصيل',
+        'review.edit':'تعديل',
+        'review.yes':'نعم',
+        'review.no':'لا',
+        'review.depends':'يعتمد',
+        'review.items':'عناصر',
+        'review.optional':'(اختياري)',
+
+        'submit.ready':'جاهز للإرسال؟',
+        'submit.button':'إرسال الاستبيان',
+        'submit.note':'بإرسالك تؤكد أن هذه أفضل تقديراتك الحالية ويمكنك تحديثها في أي وقت.',
+
+        'link.privacy':'سياسة الخصوصية',
+        'link.terms':'شروط الخدمة',
+
+        'status.missing':'يرجى إدخال اسمك واسم المخيم/النُزل والبريد الإلكتروني.',
+        'status.details_required':'يرجى إكمال التفاصيل المطلوبة قبل المتابعة.',
+        'status.submitting':'جارٍ إرسال إجاباتك...','status.saved':'شكرًا — تم حفظ استبيانك.',
+        'status.mailto':'شكرًا — يجب أن يفتح تطبيق البريد لإرسال الملخص.',
+        'status.not_configured':'الإرسال غير مهيأ بعد. يرجى التواصل مع SafariMatcher.',
+        'status.failed':'تعذر إرسال الاستبيان. يرجى المحاولة مرة أخرى.',
+
+        'subject.prefix':'استبيان مشغل SafariMatcher - ',
+        'mail.note1':'ملاحظة: هذا الإرسال عبر البريد لا يتضمن المصفوفة كاملة.',
+        'mail.note2':'يرجى طلب تفعيل نقطة إرسال آمنة من SafariMatcher.',
+
+        'pretty.title':'استبيان مشغل SafariMatcher','pretty.operator':'المشغل','pretty.camp':'المخيم/النُزل',
+        'pretty.email':'البريد الإلكتروني','pretty.website':'الموقع الإلكتروني','pretty.notes':'ملاحظات',
+        'pretty.animals':'الحيوانات','pretty.adventures':'التجارب','pretty.yes':'نعم (احتمال واحد)',
+        'pretty.depends':'يعتمد على الشهر','pretty.no':'لا','pretty.none':'(لا توجد اختيارات)','pretty.submitted':'تم الإرسال',
+        'pretty.base':'الأساس','pretty.overrides':'تعديلات','pretty.no_overrides':'(لا تعديلات)',
+
+        'month.jan':'ينا','month.feb':'فبر','month.mar':'مار','month.apr':'أبر','month.may':'ماي','month.jun':'يون',
+        'month.jul':'يول','month.aug':'أغس','month.sep':'سبت','month.oct':'أكت','month.nov':'نوف','month.dec':'ديس'
+      },
+      fr: {
+        'language.label':'Langue',
+        'language.aria_label':'Choisir la langue',
+        'topbar.tagline':'Portail opérateur • Sans pubs • Sans partenariats • Sans rétrocommissions • Sans biais',
+
+        'survey.title':'Enquête opérateur — Animaux et expériences',
+        'survey.subtitle':'Disponibilités mois par mois, claires et fiables.',
+        'meta.eta':'Env. 6–10 min',
+
+        'autosave.ready':'Sauvegarde auto activée',
+        'autosave.saving':'Sauvegarde…',
+        'autosave.saved':'Enregistré',
+        'autosave.restored':'Brouillon restauré',
+
+        'step.details':'Détails',
+        'step.animals':'Animaux',
+        'step.adventures':'Expériences',
+        'step.review':'Vérifier',
+
+        'nav.back':'Retour',
+        'nav.next':'Suivant',
+
+        'details.title':'Détails du camp / lodge',
+        'details.intro':'Renseignez l’essentiel; ignorez ce qui ne s’applique pas. Vous pouvez revenir plus tard — sauvegarde auto sur cet appareil.',
+        'help.operator_name':'Pour savoir qui contacter en cas de question.',
+        'help.camp_name':'Utilisez le nom public que les voyageurs reconnaissent.',
+        'help.contact_email':'Nous ne le vendons jamais. Uniquement pour la mise en relation et le suivi.',
+        'help.website':'Utile pour vérifier les informations et améliorer la qualité des matchs.',
+        'help.notes':'Court, c’est très bien. Les puces sont les bienvenues.',
+        'tip.details':'Ensuite : choisissez “Oui / Non / Dépend” par ligne, puis une probabilité. “Dépend” ouvre la vue mensuelle.',
+
+        'label.operator_name':'Votre nom et rôle',
+        'placeholder.operator_name':'ex. Jane Doe, Responsable réservations',
+        'label.camp_name':'Nom du camp / lodge',
+        'placeholder.camp_name':'ex. Mara Plains Camp',
+        'label.contact_email':'E-mail de contact',
+        'placeholder.contact_email':'you@example.com',
+        'label.website':'Site web (optionnel)',
+        'placeholder.website':'https://…',
+        'label.notes':'Quelque chose à signaler ? (optionnel)',
+        'placeholder.notes':'Ex. notes saisonnières, règles de concession privée, migrations, réintroductions récentes, etc.',
+
+        'animals.title':'Animaux — probabilité',
+        'animals.help_short':'Les pourcentages sont des chances typiques — pas des garanties.',
+        'adventures.title':'Expériences — disponibilité',
+        'adventures.help_short':'Si une activité est saisonnière, indiquez-le.',
+
+        'animals.mode_help':'Choisissez {yes}, {no} ou {depends}. Si vous choisissez Dépend, une vue mensuelle s’ouvre pour cette ligne.',
+        'adventures.mode_help':'Choisissez {yes}, {no} ou {depends}. Si vous choisissez Dépend, une vue mensuelle s’ouvre pour cette ligne.',
+        'mode.yes':'Oui',
+        'mode.no':'Non',
+        'mode.depends':'Dépend du mois',
+
+        'row.months':'Mois',
+        'row.edit_months':'Modifier les mois',
+        'row.overrides':'Ajustements',
+        'row.no_overrides':'Aucun ajustement mensuel',
+
+        'table.animal':'Animal',
+        'table.adventure':'Expérience',
+        'table.answer':'Réponse',
+        'table.probability':'Probabilité',
+
+        'animals.help':'Les pourcentages sont des chances typiques pour un séjour — pas des garanties.',
+        'adventures.help':'Si une activité est saisonnière (ex. navigation selon le niveau d’eau), indiquez-le ici.',
+
+        'sheet.kicker':'Détail mensuel',
+        'sheet.subtitle':'Ajustez seulement les mois qui diffèrent de la probabilité de base.',
+        'sheet.reset':'Réinitialiser les ajustements',
+        'sheet.done':'Terminé',
+        'sheet.close_aria':'Fermer',
+
+        'review.title':'Vérifier',
+        'review.subtitle':'Un aperçu rapide avant l’envoi.',
+        'review.details':'Détails',
+        'review.edit':'Modifier',
+        'review.yes':'Oui',
+        'review.no':'Non',
+        'review.depends':'Dépend',
+        'review.items':'éléments',
+        'review.optional':'(optionnel)',
+
+        'submit.ready':'Prêt à envoyer ?',
+        'submit.button':'Envoyer l’enquête',
+        'submit.note':'En envoyant, vous confirmez que ce sont vos meilleures estimations à ce jour. Vous pouvez les mettre à jour à tout moment.',
+
+        'link.privacy':'Politique de confidentialité',
+        'link.terms':'Conditions d’utilisation',
+
+        'status.missing':'Veuillez renseigner votre nom, le nom du camp/lodge et l’e-mail.',
+        'status.details_required':'Veuillez compléter les détails requis avant de continuer.',
+        'status.submitting':'Envoi de vos réponses...',
+        'status.saved':'Merci - votre enquête a bien été enregistrée. Vous pourrez la mettre à jour plus tard.',
+        'status.mailto':'Merci - votre application e-mail devrait s’ouvrir pour envoyer un résumé.',
+        'status.not_configured':'L’envoi n’est pas encore configuré. Veuillez contacter SafariMatcher pour activer le lien d’enquête.',
+        'status.failed':'Nous n’avons pas pu envoyer votre enquête. Veuillez réessayer ou contacter le support SafariMatcher.',
+
+        'subject.prefix':'Enquête opérateur SafariMatcher - ',
+        'mail.note1':'REMARQUE: Ce secours e-mail n’inclut pas la matrice complète.',
+        'mail.note2':'Veuillez demander à SafariMatcher d’activer un point d’envoi sécurisé (recommandé).',
+
+        'pretty.title':'Enquête opérateur SafariMatcher',
+        'pretty.operator':'Opérateur',
+        'pretty.camp':'Camp/Lodge',
+        'pretty.email':'E-mail',
+        'pretty.website':'Site web',
+        'pretty.notes':'Notes',
+        'pretty.animals':'Animaux',
+        'pretty.adventures':'Expériences',
+        'pretty.yes':'Oui (probabilité unique)',
+        'pretty.depends':'Dépend du mois',
+        'pretty.no':'Non',
+        'pretty.none':'(Aucune sélection fournie)',
+        'pretty.submitted':'Soumis',
+        'pretty.base':'Base',
+        'pretty.overrides':'Ajustements',
+        'pretty.no_overrides':'(aucun ajustement)',
+
+        'month.jan':'Jan','month.feb':'Fév','month.mar':'Mar','month.apr':'Avr','month.may':'Mai','month.jun':'Juin',
+        'month.jul':'Juil','month.aug':'Aoû','month.sep':'Sep','month.oct':'Oct','month.nov':'Nov','month.dec':'Déc'
+      },
+      ha: {
+        'language.label':'Harshe','language.aria_label':'Zaɓi harshe',
+        'topbar.tagline':'Tashar Mai Gudanarwa • Babu tallace-tallace • Babu haɗin gwiwa • Babu kickback • Babu son kai',
+
+        'survey.title':'Binciken Mai Gudanarwa — Dabbobi da Abubuwan Kasada',
+        'survey.subtitle':'Samuwa wata-wata a sarari — don daidaito da amincewa.',
+        'meta.eta':'Kimanin minti 6–10',
+
+        'autosave.ready':'Ajiya ta atomatik a kunne',
+        'autosave.saving':'Ana ajiyewa…',
+        'autosave.saved':'An ajiye',
+        'autosave.restored':'An dawo da daftarin',
+
+        'step.details':'Bayanai',
+        'step.animals':'Dabbobi',
+        'step.adventures':'Kasada',
+        'step.review':'Duba',
+
+        'nav.back':'Komawa',
+        'nav.next':'Gaba',
+
+        'details.title':'Bayanin sansani / lodge',
+        'details.intro':'Cika muhimmai; tsallake abin da bai dace ba. Za ka iya dawowa — muna ajiyewa a wannan na’ura.',
+        'help.operator_name':'Don mu san wanda za mu tuntuɓa idan akwai tambaya.',
+        'help.camp_name':'Yi amfani da sunan da matafiya suka sani.',
+        'help.contact_email':'Ba mu sayar da shi. Don daidaita da tuntuɓa kawai.',
+        'help.website':'Yana taimakawa wajen tabbatar da bayanai da inganta daidaitawa.',
+        'help.notes':'Ko gajere ya isa. Ana maraba da maki-maki.',
+        'tip.details':'Na gaba: zaɓi “Eh / A’a / Ya danganta” a kowane layi, sannan ka sa yiwuwa. “Ya danganta” yana buɗe watanni.',
+
+        'label.operator_name':'Sunanka da matsayinka','placeholder.operator_name':'mis. Jane Doe, Manajan Ajiyar Wuri',
+        'label.camp_name':'Sunan sansani / lodge','placeholder.camp_name':'mis. Mara Plains Camp',
+        'label.contact_email':'Imel na tuntuɓa','placeholder.contact_email':'you@example.com',
+        'label.website':'Yanar gizo (na zaɓi)','placeholder.website':'https://…',
+        'label.notes':'Akwai abin da ya kamata mu lura da shi? (na zaɓi)',
+        'placeholder.notes':'mis. bayanan yanayi, dokokin concession na sirri, ƙaura, sake gabatarwa...',
+
+        'animals.title':'Dabbobi — yiwuwa',
+        'animals.help_short':'Kashi-kashi dama ce ta al’ada ga baƙi, ba garanti ba.',
+        'adventures.title':'Kasada — samuwa',
+        'adventures.help_short':'Idan abu na yanayi ne, nuna a nan.',
+
+        'animals.mode_help':'Zaɓi {yes}, {no}, ko {depends}. Idan ka zaɓi Ya danganta, za a buɗe duba watanni don wannan layi.',
+        'adventures.mode_help':'Zaɓi {yes}, {no}, ko {depends}. Idan ka zaɓi Ya danganta, za a buɗe duba watanni don wannan layi.',
+        'mode.yes':'Eh','mode.no':'A’a','mode.depends':'Ya danganta da wata',
+
+        'row.months':'Watanni',
+        'row.edit_months':'Gyara watanni',
+        'row.overrides':'Canje-canje',
+        'row.no_overrides':'Babu canji na wata',
+
+        'table.animal':'Dabba','table.adventure':'Kasada','table.answer':'Amsa','table.probability':'Yiwuwa',
+
+        'animals.help':'Kashi-kashi dama ce ta al’ada ga baƙi, ba garanti ba.',
+        'adventures.help':'Idan wani abu na yanayi ne (mis. jirgin ruwa ya danganta da matakin ruwa), nuna a nan.',
+
+        'sheet.kicker':'Rarrabawar wata-wata',
+        'sheet.subtitle':'Canja watannin da suka bambanta da asali kawai.',
+        'sheet.reset':'Sake saita canje-canje',
+        'sheet.done':'An gama',
+        'sheet.close_aria':'Rufe',
+
+        'review.title':'Duba',
+        'review.subtitle':'Taƙaitaccen dubawa kafin aikawa.',
+        'review.details':'Bayanai',
+        'review.edit':'Gyara',
+        'review.yes':'Eh',
+        'review.no':'A’a',
+        'review.depends':'Ya danganta',
+        'review.items':'abubuwa',
+        'review.optional':'(na zaɓi)',
+
+        'submit.ready':'Shirye don aikawa?',
+        'submit.button':'Aika bincike',
+        'submit.note':'Da aika wannan, ka tabbatar wadannan su ne mafi kyawun hasashenka yanzu. Za ka iya sabuntawa kowane lokaci.',
+
+        'link.privacy':'Manufar Sirri',
+        'link.terms':'Sharudan Sabis',
+
+        'status.missing':'Da fatan a cika sunanka, sunan sansani/lodge, da imel.',
+        'status.details_required':'Da fatan a kammala bayanan da ake bukata kafin ci gaba.',
+        'status.submitting':'Ana aika amsoshinka...','status.saved':'Na gode — an adana bincikenka.',
+        'status.mailto':'Na gode — manhajar imel ɗinka za ta buɗe don aika taƙaitaccen bayani.',
+        'status.not_configured':'Ba a saita aikawa ba tukuna. Tuntuɓi SafariMatcher.',
+        'status.failed':'Ba mu iya aika bincikenka ba. Da fatan ka sake gwadawa.',
+
+        'subject.prefix':'Binciken Mai Gudanarwa SafariMatcher - ',
+        'mail.note1':'LURA: Wannan madadin imel ba ya ƙunshe da cikakken matrix.',
+        'mail.note2':'A nemi SafariMatcher ya kunna aminci endpoint na aikawa.',
+
+        'pretty.title':'Binciken Mai Gudanarwa SafariMatcher','pretty.operator':'Mai Gudanarwa','pretty.camp':'Sansani/Lodge',
+        'pretty.email':'Imel','pretty.website':'Yanar gizo','pretty.notes':'Bayanan kula',
+        'pretty.animals':'Dabbobi','pretty.adventures':'Kasada','pretty.yes':'Eh (yiwuwar guda)',
+        'pretty.depends':'Ya danganta da wata','pretty.no':'A’a','pretty.none':'(Ba a bayar da zaɓi ba)',
+        'pretty.submitted':'An aika','pretty.base':'Asali','pretty.overrides':'Canje-canje','pretty.no_overrides':'(babu canje-canje)',
+
+        'month.jan':'Jan','month.feb':'Fab','month.mar':'Mar','month.apr':'Afi','month.may':'May','month.jun':'Yun',
+        'month.jul':'Yul','month.aug':'Agu','month.sep':'Sat','month.oct':'Okt','month.nov':'Nuw','month.dec':'Dis'
+      },
+      yo: {
+        'language.label':'Èdè','language.aria_label':'Yan èdè',
+        'topbar.tagline':'Pọtàlì Olùdarí • Kò sí ìpolówó • Kò sí ìfowósowọ́pọ̀ • Kò sí kickback • Kò sí ìyàsọ́tọ̀',
+
+        'survey.title':'Ìwádìí Olùdarí — Ẹranko àti Ìrìnàjò',
+        'survey.subtitle':'Ìwàláàyè oṣù kọọkan ní kedere — fún ìdánilẹ́kọ̀ọ́ àti ìgbẹ́kẹ̀lé.',
+        'meta.eta':'Ìṣẹ́jú 6–10 (àfojúsùn)',
+
+        'autosave.ready':'Ìfipamọ́ aifọwọyi wa',
+        'autosave.saving':'Ń fipamọ́…',
+        'autosave.saved':'Ti fipamọ́',
+        'autosave.restored':'A ti gba daftà padà',
+
+        'step.details':'Àlàyé',
+        'step.animals':'Ẹranko',
+        'step.adventures':'Ìrìnàjò',
+        'step.review':'Kà á',
+
+        'nav.back':'Padà',
+        'nav.next':'Tẹ̀síwájú',
+
+        'details.title':'Àlàyé ibùdó / lodge',
+        'details.intro':'Kún ohun tó ṣe pàtàkì nìkan. O lè padà wá — a ń fipamọ́ lórí ẹrọ yìí.',
+        'help.operator_name':'Kí a lè mọ ẹni tá a máa kan sí bí ó bá yẹ.',
+        'help.camp_name':'Lo orúkọ gbangba tí arìnrìnàjò mọ̀.',
+        'help.contact_email':'A kì í tà á rárá. Fún ìbámu àti ìbánisọ̀rọ̀ nìkan.',
+        'help.website':'Ó ràn wá lọ́wọ́ láti ṣàyẹ̀wò àlàyé àti láti mu ìbámu dára.',
+        'help.notes':'Fúùfù ni. Àwọn bullet jẹ́ káàbọ̀.',
+        'tip.details':'Tẹ̀síwájú: yan “Bẹ́ẹ̀ni / Rárá / Ó dá lórí” fún ọ̀nà kọọkan, lẹ́yìn náà ṣètò seese. “Ó dá lórí” yóò ṣí oṣù.',
+
+        'label.operator_name':'Orúkọ àti ipa rẹ','placeholder.operator_name':'àpẹẹrẹ: Jane Doe, Alákóso Ìfipamọ́',
+        'label.camp_name':'Orúkọ ibùdó / lodge','placeholder.camp_name':'àpẹẹrẹ: Mara Plains Camp',
+        'label.contact_email':'Ímẹ́lì ìbánisọ̀rọ̀','placeholder.contact_email':'you@example.com',
+        'label.website':'Ojúlé ayé (àṣàyàn)','placeholder.website':'https://…',
+        'label.notes':'Ṣé ohun míì wà tí a gbọ́dọ̀ mọ̀? (àṣàyàn)',
+        'placeholder.notes':'àpẹẹrẹ: àlàyé àkókò ọdún, òfin concession aládani, ìṣílọ̀, ìtúnfi ẹ̀dá sílẹ̀...',
+
+        'animals.title':'Ẹranko — seese',
+        'animals.help_short':'Ìdá ọgọ́rùn-ún jẹ́ seese, kì í ṣe ìdánilójú.',
+        'adventures.title':'Ìrìnàjò — ìwàláàyè',
+        'adventures.help_short':'Tí ohun kan bá jẹ́ ti àsìkò, fi hàn níbí.',
+
+        'animals.mode_help':'Yan {yes}, {no}, tàbí {depends}. Bí o bá yan Ó dá lórí, a ó ṣí dídánwò oṣù fún ọ̀nà yẹn.',
+        'adventures.mode_help':'Yan {yes}, {no}, tàbí {depends}. Bí o bá yan Ó dá lórí, a ó ṣí dídánwò oṣù fún ọ̀nà yẹn.',
+        'mode.yes':'Bẹ́ẹ̀ni','mode.no':'Rárá','mode.depends':'Ó dá lórí oṣù',
+
+        'row.months':'Oṣù',
+        'row.edit_months':'Ṣàtúnṣe oṣù',
+        'row.overrides':'Àtúnṣe',
+        'row.no_overrides':'Kò sí àtúnṣe oṣù',
+
+        'table.animal':'Ẹranko','table.adventure':'Ìrìnàjò','table.answer':'Ìdáhùn','table.probability':'Seese',
+
+        'animals.help':'Ìdá ọgọ́rùn-ún jẹ́ seese fún alejo ní ìbùgbé àṣà, kì í ṣe ìdánilójú.',
+        'adventures.help':'Tí ohun kan bá jẹ́ ti àsìkò (àpẹẹrẹ, ọkọ omi da lórí ìpele omi), fi hàn níbí.',
+
+        'sheet.kicker':'Ìpín oṣù kọọkan',
+        'sheet.subtitle':'Ṣàtúnṣe àwọn oṣù tó yàtọ̀ sí ìpìlẹ̀ nìkan.',
+        'sheet.reset':'Tún àtúnṣe ṣe',
+        'sheet.done':'Tán',
+        'sheet.close_aria':'Pa',
+
+        'review.title':'Kà á',
+        'review.subtitle':'Àkótán kí o tó fi ránṣẹ́.',
+        'review.details':'Àlàyé',
+        'review.edit':'Ṣàtúnṣe',
+        'review.yes':'Bẹ́ẹ̀ni',
+        'review.no':'Rárá',
+        'review.depends':'Ó dá lórí',
+        'review.items':'àwọn nkan',
+        'review.optional':'(àṣàyàn)',
+
+        'submit.ready':'Ṣé o ti setan láti fi ránṣẹ́?',
+        'submit.button':'Fi ìwádìí ránṣẹ́',
+        'submit.note':'Nípa fífi ránṣẹ́, o jẹ́rìí pé wọ̀nyí ni àfojúsùn tó dáa jù lọ lónìí. O lè tún un ṣe nigbakugba.',
+
+        'link.privacy':'Ilana Aṣírí',
+        'link.terms':'Àwọn Ofin Iṣẹ́',
+
+        'status.missing':'Jọ kún orúkọ rẹ, orúkọ ibùdó/lodge, àti ímẹ́lì.',
+        'status.details_required':'Jọ kún àwọn àlàyé tó jẹ́ dandan kí o tó tẹ̀síwájú.',
+        'status.submitting':'A ń fi ìdáhùn rẹ ránṣẹ́...','status.saved':'Ẹ ṣé — a ti fi ìwádìí rẹ pamọ́.',
+        'status.mailto':'Ẹ ṣé — ohun èlò ímẹ́lì rẹ yẹ kí ó ṣí láti fi àkótán ránṣẹ́.',
+        'status.not_configured':'A kò tíì ṣètò fífi ránṣẹ́. Jọ kan sí SafariMatcher.',
+        'status.failed':'A kò lè fi ìwádìí rẹ ránṣẹ́. Jọ tún gbìyànjú.',
+
+        'subject.prefix':'Ìwádìí Olùdarí SafariMatcher - ',
+        'mail.note1':'AKIYESI: Àtìlẹ́yìn ímẹ́lì yìí kò ní matrix kikun.',
+        'mail.note2':'Jọ béèrè kí SafariMatcher muu endpoint ailewu ṣiṣẹ.',
+
+        'pretty.title':'Ìwádìí Olùdarí SafariMatcher','pretty.operator':'Olùdarí','pretty.camp':'Ibùdó/Lodge',
+        'pretty.email':'Ímẹ́lì','pretty.website':'Ojúlé ayé','pretty.notes':'Àwọn akọsilẹ',
+        'pretty.animals':'Ẹranko','pretty.adventures':'Ìrìnàjò','pretty.yes':'Bẹ́ẹ̀ni (seese kan)',
+        'pretty.depends':'Ó dá lórí oṣù','pretty.no':'Rárá','pretty.none':'(Kò sí yíyan)',
+        'pretty.submitted':'A ti fi ránṣẹ́','pretty.base':'Ìpìlẹ̀','pretty.overrides':'Àtúnṣe','pretty.no_overrides':'(kò sí àtúnṣe)',
+
+        'month.jan':'Ṣẹ́r','month.feb':'Èr','month.mar':'Ẹt','month.apr':'Ìgb','month.may':'Èbi','month.jun':'Okú',
+        'month.jul':'Agẹ','month.aug':'Ògú','month.sep':'Owe','month.oct':'Ọwa','month.nov':'Bél','month.dec':'Ọpẹ'
+      }
+    };
+
+    const i18nAnimals = {
+      sw:{
+        'african-lion':'Simba wa Afrika','elephant':'Tembo','leopard':'Chui','rhinoceros':'Kifaru','cape-buffalo':'Nyati wa Cape','cheetah':'Duma','spotted-hyena':'Fisi mwenye madoa',
+        'giraffe':'Twiga','hippopotamus':'Kiboko','zebra':'Punda milia','wildebeest':'Nyumbu','kudu':'Kudu','sable-antelope':'Swala sable','giant-eland':'Eland mkubwa',
+        'gemsbok-oryx':'Gemsbok (Oryx)','red-hartebeest-topi':'Hartebeest mwekundu / Topi','waterbuck':'Koba','impala':'Impala','warthog':'Ngiri mwitu','crocodile':'Mamba',
+        'serval-caracal':'Serval / Karakali','baboon':'Nyani','vervet-monkey':'Tumbili vervet','meerkat':'Meerkat','mountain-gorilla':'Sokwe wa mlima',
+        'chimpanzee':'Sokwe','pangolin':'Kakakuona','jackal-wild-dog':'Mbweha / Mbwa mwitu wa Afrika','ostrich':'Mbuni','secretary-bird':'Ndege katibu'
+      },
+      ar:{
+        'african-lion':'أسد أفريقي','elephant':'فيل','leopard':'نمر','rhinoceros':'وحيد القرن','cape-buffalo':'جاموس الكيب','cheetah':'فهد','spotted-hyena':'ضبع مرقط',
+        'giraffe':'زرافة','hippopotamus':'فرس النهر','zebra':'حمار وحشي','wildebeest':'نو','kudu':'كودو','sable-antelope':'ظبي سابل',
+        'giant-eland':'إيلاند عملاق','gemsbok-oryx':'جمسبوك (أوريكس)','red-hartebeest-topi':'هارتبيست أحمر / توبي','waterbuck':'ظبي الماء','impala':'إمبالا',
+        'warthog':'خنزير بري','crocodile':'تمساح','serval-caracal':'سيرفال / كاراكال','baboon':'بابون','vervet-monkey':'قرد فيرفت',
+        'meerkat':'ميركات','mountain-gorilla':'غوريلا جبلية','chimpanzee':'شمبانزي','pangolin':'آكل النمل الحرشفي','jackal-wild-dog':'ابن آوى / كلب بري أفريقي',
+        'ostrich':'نعامة','secretary-bird':'طائر السكرتير'
+      },
+      fr:{
+        'african-lion':'Lion d’Afrique','elephant':'Éléphant','leopard':'Léopard','rhinoceros':'Rhinocéros','cape-buffalo':'Buffle du Cap','cheetah':'Guépard','spotted-hyena':'Hyène tachetée',
+        'giraffe':'Girafe','hippopotamus':'Hippopotame','zebra':'Zèbre','wildebeest':'Gnou','kudu':'Koudou','sable-antelope':'Antilope sable','giant-eland':'Grand éland',
+        'gemsbok-oryx':'Gemsbok (oryx)','red-hartebeest-topi':'Hartebeest rouge / Topi','waterbuck':'Cobe','impala':'Impala','warthog':'Phacochère','crocodile':'Crocodile',
+        'serval-caracal':'Serval / Caracal','baboon':'Babouin','vervet-monkey':'Singe vervet','meerkat':'Suricate','mountain-gorilla':'Gorille des montagnes',
+        'chimpanzee':'Chimpanzé','pangolin':'Pangolin','jackal-wild-dog':'Chacal / Lycaon','ostrich':'Autruche','secretary-bird':'Messager sagittaire'
+      },
+      ha:{
+        'african-lion':'Zakin Afrika','elephant':'Giwa','leopard':'Damisa','rhinoceros':'Kakaki','cape-buffalo':'Bafalo na Cape','cheetah':'Cheetah','spotted-hyena':'Kura mai tabo',
+        'giraffe':'Raƙumin dawa','hippopotamus':'Hippo','zebra':'Zebra','wildebeest':'Gnu','kudu':'Kudu','sable-antelope':'Barewa sable','giant-eland':'Eland babba',
+        'gemsbok-oryx':'Gemsbok (Oryx)','red-hartebeest-topi':'Hartebeest ja / Topi','waterbuck':'Waterbuck','impala':'Impala','warthog':'Alade daji','crocodile':'Kada',
+        'serval-caracal':'Serval / Caracal','baboon':'Baboon','vervet-monkey':'Birai vervet','meerkat':'Meerkat','mountain-gorilla':'Gorilla na dutse',
+        'chimpanzee':'Chimpanzee','pangolin':'Pangolin','jackal-wild-dog':'Jackal / Kare daji na Afrika','ostrich':'Jiman-gwari','secretary-bird':'Tsuntsun sakatariya'
+      },
+      yo:{
+        'african-lion':'Kìnìún Áfíríkà','elephant':'Ẹléfántì','leopard':'Ẹkùn','rhinoceros':'Kákákì','cape-buffalo':'Bàfálò Cape','cheetah':'Cheetah','spotted-hyena':'Hàíyẹ́nà tó ní àwò',
+        'giraffe':'Gíràfì','hippopotamus':'Hippo','zebra':'Zebra','wildebeest':'Wildebeest','kudu':'Kudu','sable-antelope':'Antelope sable','giant-eland':'Eland ńlá',
+        'gemsbok-oryx':'Gemsbok (Oryx)','red-hartebeest-topi':'Hartebeest pupa / Topi','waterbuck':'Waterbuck','impala':'Impala','warthog':'Warthog','crocodile':'Kòdílà',
+        'serval-caracal':'Serval / Caracal','baboon':'Baboon','vervet-monkey':'Ọbọ vervet','meerkat':'Meerkat','mountain-gorilla':'Gorilla òkè',
+        'chimpanzee':'Chimpanzee','pangolin':'Pangolin','jackal-wild-dog':'Jackal / Ajá igbó Áfíríkà','ostrich':'Ostrich','secretary-bird':'Secretary bird'
+      }
+    };
+
+    const i18nAdventures = {
+      sw:{
+        'great-migration':'Uhamaji Mkuu','night-drive':'Safari ya usiku','guided-walking-safari':'Safari ya kutembea na mwongozo','wilderness-hike':'Matembezi porini',
+        'boat-pontoon-safari':'Safari ya mashua au pontoon','mokoro-dugout-excursion':'Ziara ya Mokoro (mtumbwi)','canoe-rafting-safari':'Safari ya mtumbwi au rafting',
+        'hot-air-balloon-flight':'Safari ya puto ya hewa moto','helicopter-safari':'Safari ya helikopta','fixed-wing-scenic-flight':'Safari ya ndege ndogo ya mandhari',
+        'horseback-safari':'Safari ya farasi','animal-tracking-on-foot':'Kufuatilia wanyama kwa miguu','great-ape-trekking':'Trekking ya sokwe wakubwa',
+        'photographic-safari-workshop':'Warsha ya safari ya picha','sleep-out-fly-camping':'Kulala nje chini ya nyota / fly camping',
+        'cultural-village-visit-dance':'Ziara ya kijiji cha kitamaduni na ngoma','multi-day-trek':'Trek ya siku nyingi',
+        'zip-line':'Zip line','trip-to-beach':'Safari ya ufukweni','pool':'Bwawa la kuogelea'
+      },
+      ar:{
+        'great-migration':'الهجرة الكبرى','night-drive':'جولة ليلية','guided-walking-safari':'سفاري مشي بإرشاد','wilderness-hike':'نزهة في البرية',
+        'boat-pontoon-safari':'سفاري بالقارب أو البونتون','mokoro-dugout-excursion':'رحلة موكورو (زورق محفور)',
+        'canoe-rafting-safari':'سفاري كانو أو رافتينغ','hot-air-balloon-flight':'رحلة منطاد هوائي',
+        'helicopter-safari':'سفاري بطائرة هليكوبتر','fixed-wing-scenic-flight':'رحلة جوية بمنظر بانورامي',
+        'horseback-safari':'سفاري على ظهر الخيل','animal-tracking-on-foot':'تتبع الحيوانات سيرًا',
+        'great-ape-trekking':'تتبع القردة العليا','photographic-safari-workshop':'ورشة سفاري تصوير',
+        'sleep-out-fly-camping':'مبيت تحت النجوم / مخيم طيران','cultural-village-visit-dance':'زيارة قرية ثقافية ورقص تقليدي',
+        'multi-day-trek':'رحلة متعددة الأيام','zip-line':'زيب لاين','trip-to-beach':'رحلة إلى الشاطئ','pool':'مسبح'
+      },
+      fr:{
+        'great-migration':'Grande migration','night-drive':'Safari de nuit','guided-walking-safari':'Safari à pied guidé',
+        'wilderness-hike':'Randonnée en pleine nature','boat-pontoon-safari':'Safari en bateau ou ponton',
+        'mokoro-dugout-excursion':'Excursion en mokoro (pirogue)','canoe-rafting-safari':'Safari en canoë ou rafting',
+        'hot-air-balloon-flight':'Vol en montgolfière','helicopter-safari':'Safari en hélicoptère',
+        'fixed-wing-scenic-flight':'Vol panoramique en avion léger','horseback-safari':'Safari à cheval',
+        'animal-tracking-on-foot':'Pistage des animaux à pied','great-ape-trekking':'Trek des grands singes',
+        'photographic-safari-workshop':'Atelier photo safari','sleep-out-fly-camping':'Nuit à la belle étoile / fly camping',
+        'cultural-village-visit-dance':'Visite de village culturel et danse traditionnelle',
+        'multi-day-trek':'Trek de plusieurs jours (montagne ou sac à dos)','zip-line':'Tyrolienne',
+        'trip-to-beach':'Sortie à la plage','pool':'Piscine'
+      },
+      ha:{
+        'great-migration':'Babban hijira','night-drive':'Yawon dare','guided-walking-safari':'Safari na tafiya da jagora','wilderness-hike':'Tafiya cikin daji',
+        'boat-pontoon-safari':'Safari na jirgi ko pontoon','mokoro-dugout-excursion':'Zagaye na Mokoro (canoe)','canoe-rafting-safari':'Safari na canoe ko rafting',
+        'hot-air-balloon-flight':'Tafiyar baloon mai zafi','helicopter-safari':'Safari na helicopter','fixed-wing-scenic-flight':'Tafiyar jirgin sama mai kallon gani',
+        'horseback-safari':'Safari a kan doki','animal-tracking-on-foot':'Binciken sawun dabbobi da ƙafa','great-ape-trekking':'Trekking na manyan birrai',
+        'photographic-safari-workshop':'Taron horon daukar hoto','sleep-out-fly-camping':'Kwanciya a ƙarƙashin taurari / fly camping',
+        'cultural-village-visit-dance':'Ziyarar ƙauyen al’adu da rawa','multi-day-trek':'Trek na kwanaki da yawa','zip-line':'Zip line','trip-to-beach':'Tafiya zuwa bakin teku','pool':'Wurin wanka'
+      },
+      yo:{
+        'great-migration':'Ìṣílọ̀ ńlá','night-drive':'Irin-ajo alẹ́','guided-walking-safari':'Safari rìn pẹ̀lú amọ̀nà','wilderness-hike':'Ìrìn àjò inú igbó',
+        'boat-pontoon-safari':'Safari ọkọ omi tàbí pontoon','mokoro-dugout-excursion':'Ìrìn Mokoro (canoe)','canoe-rafting-safari':'Safari canoe tàbí rafting',
+        'hot-air-balloon-flight':'Ìrìn baluu afẹ́fẹ́ gbígbóná','helicopter-safari':'Safari helicopter','fixed-wing-scenic-flight':'Ìrìn ofurufu wiwo àgbègbè',
+        'horseback-safari':'Safari lori ẹṣin','animal-tracking-on-foot':'Titele ẹranko ní ẹsẹ̀','great-ape-trekking':'Trekking àwọn ape ńlá',
+        'photographic-safari-workshop':'Workshop safari fọ́tò','sleep-out-fly-camping':'Sùn níta labẹ́ irawọ / fly camping',
+        'cultural-village-visit-dance':'Àbẹwò abúlé àṣà àti ijó ibílẹ̀','multi-day-trek':'Trek ọjọ́ púpọ̀','zip-line':'Zip line','trip-to-beach':'Ìrìn lọ sí etíkun','pool':'Adágún-omi'
+      }
+    };
+
+    const animalLabelsEn = {};
+    animals.forEach(a => { animalLabelsEn[a.id] = a.label; });
+    const adventureLabelsEn = {};
+    adventures.forEach(a => { adventureLabelsEn[a.id] = a.label; });
+
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const createEl = (tag, props={}, children=[]) => {
+      const node = document.createElement(tag);
+      Object.assign(node, props);
+      children.forEach(child => node.appendChild(child));
+      return node;
+    };
+
+    function t(key, lang){
+      const active = translations[lang || currentLang] || translations.en;
+      return active[key] || translations.en[key] || key;
+    }
+
+    function monthLabel(monthId){ return t('month.' + monthId); }
+
+    function labelForItem(groupKey, itemId, fallback){
+      if(groupKey === 'animals'){
+        return (i18nAnimals[currentLang] && i18nAnimals[currentLang][itemId]) || animalLabelsEn[itemId] || fallback || itemId;
+      }
+      if(groupKey === 'adventures'){
+        return (i18nAdventures[currentLang] && i18nAdventures[currentLang][itemId]) || adventureLabelsEn[itemId] || fallback || itemId;
+      }
+      return fallback || itemId;
+    }
+
+    function getLang(){
+      try{
+        const saved = localStorage.getItem(LANG_STORAGE_KEY);
+        if(saved && SUPPORTED_LANGS.includes(saved)) return saved;
+      }catch(e){}
+      return DEFAULT_LANG;
+    }
+    let currentLang = getLang();
+
+    // Track which autosave label is currently showing so language switching stays accurate.
+    var saveChipStateKey = 'autosave.ready';
+
+    function renderModeHelp(p){
+      if(!p) return;
+      const key = p.getAttribute('data-i18n');
+      const template = t(key);
+      p.innerHTML = '';
+      const parts = template.split(/(\{yes\}|\{no\}|\{depends\})/g);
+      parts.forEach(part => {
+        if(part === '{yes}') p.appendChild(createEl('span', { className:'pill-inline pill-yes', textContent:t('mode.yes') }));
+        else if(part === '{no}') p.appendChild(createEl('span', { className:'pill-inline pill-no', textContent:t('mode.no') }));
+        else if(part === '{depends}') p.appendChild(createEl('span', { className:'pill-inline pill-yes', textContent:t('mode.depends') }));
+        else p.appendChild(document.createTextNode(part));
+      });
+    }
+
+    function applyI18n(lang){
+      currentLang = SUPPORTED_LANGS.includes(lang) ? lang : DEFAULT_LANG;
+      document.documentElement.setAttribute('lang', currentLang);
+      const isArabic = currentLang === 'ar';
+      document.documentElement.setAttribute('dir', isArabic ? 'rtl' : 'ltr');
+      document.body.classList.toggle('rtl', isArabic);
+
+      $$('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(el && el.id === 'saveChip') return;
+        if(key === 'animals.mode_help' || key === 'adventures.mode_help') return;
+        el.textContent = t(key);
+      });
+      $$('[data-i18n-placeholder]').forEach(el => {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+      $$('[data-i18n-aria-label]').forEach(el => {
+        el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
+      });
+
+      $$('p[data-i18n="animals.mode_help"], p[data-i18n="adventures.mode_help"]').forEach(renderModeHelp);
+
+      applyDynamicTranslations();
+      updateWizardUI();
+      updateReview();
+
+      // Keep autosave label translated to the current language.
+      try{ setSaveChip(saveChipStateKey); }catch(e){}
+
+      const sel = $('#languageSelect');
+      if(sel) sel.value = currentLang;
+      document.title = t('survey.title');
+    }
+
+    function applyDynamicTranslations(){
+      $$('tr[data-main="1"]').forEach(row => {
+        const groupKey = row.dataset.group;
+        const itemId = row.dataset.itemId;
+        const labelNode = row.querySelector('.row-name');
+        if(labelNode) labelNode.textContent = labelForItem(groupKey, itemId, labelNode.textContent);
+      });
+
+      $$('select.mode-select').forEach(sel => {
+        const yes = sel.querySelector('option[value="yes"]');
+        const no = sel.querySelector('option[value="no"]');
+        const dep = sel.querySelector('option[value="depends"]');
+        if(yes) yes.textContent = t('mode.yes');
+        if(no) no.textContent = t('mode.no');
+        if(dep) dep.textContent = t('mode.depends');
+      });
+
+      // Months button label
+      $$('.months-btn-text').forEach(el => { el.textContent = t('row.months'); });
+
+            // Month labels inside sheet / hidden panels
+      $$('.month-cell').forEach(cell => {
+        const mId = cell.dataset.monthId;
+        const labelNode = cell.querySelector('.m-label');
+        if(mId && labelNode) labelNode.textContent = monthLabel(mId);
+      });
+
+      // Update sheet title if open
+      if(sheetState.isOpen && sheetState.mainRow){
+        setSheetTitle(sheetState.mainRow);
+      }
+
+      // Override summaries
+      $$('tr[data-main="1"]').forEach(updateOverrideSummary);
+    }
+
+    function setLang(lang){
+      const next = SUPPORTED_LANGS.includes(lang) ? lang : DEFAULT_LANG;
+      try{ localStorage.setItem(LANG_STORAGE_KEY, next); }catch(e){}
+      applyI18n(next);
+    }
+
+    function verifyTranslations(){
+      const required = Object.keys(translations.en);
+      SUPPORTED_LANGS.filter(l => l !== 'en').forEach(lang => {
+        const missing = required.filter(k => !translations[lang][k]);
+        if(missing.length) console.warn('[i18n] Missing keys for', lang + ':', missing.join(', '));
+      });
+    }
+
+    function initLanguageSwitcher(){
+      const langSel = $('#languageSelect');
+      if(!langSel) return;
+      langSel.value = currentLang;
+      langSel.addEventListener('change', function(){
+        setLang(langSel.value);
+      });
+    }
+
+    // Probability styling helpers
+    function updateSelectColor(select){
+      select.classList.remove('prob-100','prob-75','prob-50','prob-25','prob-0');
+      switch(select.value){
+        case '100': select.classList.add('prob-100'); break;
+        case '75':  select.classList.add('prob-75');  break;
+        case '50':  select.classList.add('prob-50');  break;
+        case '25':  select.classList.add('prob-25');  break;
+        case '0':   select.classList.add('prob-0');   break;
+        default: break;
+      }
+    }
+
+    function makeProbSelect(className='prob-select'){
+      const select = createEl('select', { className });
+      const options = [
+        { value:'',   label:'—' },
+        { value:'100',label:'100%' },
+        { value:'75', label:'75%' },
+        { value:'50', label:'50%' },
+        { value:'25', label:'25%' },
+        { value:'0',  label:'0%' }
+      ];
+      options.forEach(o => {
+        select.appendChild(createEl('option', { value:o.value, textContent:o.label }));
+      });
+      select.addEventListener('change', () => updateSelectColor(select));
+      return select;
+    }
+
+    function setStatus(message, type){
+      const statusEl = $('#formStatus');
+      if(!statusEl) return;
+      statusEl.textContent = message || '';
+      statusEl.className = 'form-status' + (type ? ' ' + type : '');
+    }
+
+    // Helpers for month overrides
+    function getProbValue(mainRow){
+      const probSel = mainRow.querySelector('select.prob-select[data-role="prob"]');
+      return probSel ? (probSel.value || '') : '';
+    }
+
+    function getMonthSelects(mainRow){
+      const groupKey = mainRow.dataset.group;
+      const itemId = mainRow.dataset.itemId;
+      return document.querySelectorAll('select.prob-select[data-role="month"][data-group="' + groupKey + '"][data-item-id="' + itemId + '"]');
+    }
+
+    function setMonthOverrideFlag(mainRow, monthSel){
+      const prob = getProbValue(mainRow);
+      const val = monthSel.value || '';
+      if(!val){
+        monthSel.dataset.override = '';
+        return;
+      }
+      if(!prob){
+        monthSel.dataset.override = '1';
+        return;
+      }
+      monthSel.dataset.override = (val === prob) ? '' : '1';
+    }
+
+    function syncMonthsToProb(mainRow, opts){
+      const options = opts || {};
+      const force = !!options.force;
+      const prob = getProbValue(mainRow);
+      const monthSelects = getMonthSelects(mainRow);
+      monthSelects.forEach(s => {
+        if(force || s.dataset.override !== '1'){
+          s.value = prob || '';
+          updateSelectColor(s);
+          if(!prob) s.value = '';
+        }
+        if(s.dataset.override === '1'){
+          setMonthOverrideFlag(mainRow, s);
+        }
+      });
+      updateOverrideSummary(mainRow);
+    }
+
+    function updateOverrideSummary(mainRow){
+      if(!mainRow || mainRow.dataset.main !== '1') return;
+      const badge = mainRow.querySelector('[data-role="override-count"]');
+      const summary = mainRow.querySelector('[data-role="override-summary"]');
+
+      const monthSelects = Array.from(getMonthSelects(mainRow));
+      const overrides = monthSelects.filter(s => s.dataset.override === '1');
+      const count = overrides.length;
+
+      if(badge) badge.textContent = String(count);
+
+      if(summary){
+        if(count === 0){
+          summary.textContent = t('row.no_overrides');
+        }else{
+          const shown = overrides.slice(0, 3).map(s => {
+            const m = s.dataset.monthId;
+            const v = (s.value || '').trim();
+            return monthLabel(m) + (v ? (' ' + v + '%') : ' —');
+          });
+          const more = count > 3 ? (' + ' + (count - 3)) : '';
+          summary.textContent = t('row.overrides') + ': ' + shown.join(', ') + more;
+        }
+      }
+    }
+
+    function applyMode(mainRow, modeSel){
+      const mode = modeSel.value;
+
+      mainRow.classList.remove('row-mode-yes','row-mode-no','row-mode-depends','row-disabled');
+      if(mode==='no') mainRow.classList.add('row-mode-no');
+      else if(mode==='depends') mainRow.classList.add('row-mode-depends');
+      else mainRow.classList.add('row-mode-yes');
+
+      const prob = mainRow.querySelector('select.prob-select[data-role="prob"]');
+      const monthSelects = getMonthSelects(mainRow);
+
+      const monthsBtn = mainRow.querySelector('[data-role="months-btn"]');
+      const monthsMeta = mainRow.querySelector('[data-role="months-meta"]');
+
+      mainRow.dataset.mode = mode;
+
+      if(mode === 'no'){
+        mainRow.classList.add('row-disabled');
+        if(prob){ prob.disabled = true; prob.value = ''; updateSelectColor(prob); }
+        monthSelects.forEach(s => { s.disabled = true; s.value = ''; s.dataset.override = ''; updateSelectColor(s); });
+        if(monthsBtn) monthsBtn.classList.add('is-hidden');
+        if(monthsMeta) monthsMeta.classList.add('is-hidden');
+        if(sheetState.isOpen && sheetState.mainRow === mainRow) closeMonthSheet();
+      } else if(mode === 'yes'){
+        if(prob) prob.disabled = false;
+        syncMonthsToProb(mainRow, { force:false });
+        monthSelects.forEach(s => { s.disabled = true; });
+        if(monthsBtn) monthsBtn.classList.add('is-hidden');
+        if(monthsMeta) monthsMeta.classList.add('is-hidden');
+        if(sheetState.isOpen && sheetState.mainRow === mainRow) closeMonthSheet();
+      } else { // depends
+        if(prob) prob.disabled = false;
+        monthSelects.forEach(s => { s.disabled = false; });
+        syncMonthsToProb(mainRow, { force:false });
+        if(monthsBtn) monthsBtn.classList.remove('is-hidden');
+        if(monthsMeta) monthsMeta.classList.remove('is-hidden');
+      }
+
+      updateOverrideSummary(mainRow);
+    }
+
+    // Month sheet
+    const sheetState = {
+      isOpen: false,
+      mainRow: null,
+      panelEl: null,
+      hostEl: null,
+      openerEl: null
+    };
+
+    function setSheetTitle(mainRow){
+      const title = $('#monthSheetTitle');
+      if(!title) return;
+      const groupKey = mainRow.dataset.group;
+      const itemId = mainRow.dataset.itemId;
+      title.textContent = labelForItem(groupKey, itemId, itemId);
+    }
+
+    function openMonthSheet(mainRow, openerEl){
+      const overlay = $('#monthSheetOverlay');
+      const body = $('#monthSheetBody');
+      if(!overlay || !body) return;
+
+      // Locate the (hidden) panel attached to this row
+      const detailRow = mainRow.nextElementSibling;
+      const panel = detailRow ? detailRow.querySelector('.month-panel') : null;
+      if(!panel) return;
+
+      // Move panel into sheet
+      if(panel.parentElement) panel.parentElement.removeChild(panel);
+      body.appendChild(panel);
+
+      sheetState.isOpen = true;
+      sheetState.mainRow = mainRow;
+      sheetState.panelEl = panel;
+      sheetState.hostEl = detailRow;
+      sheetState.openerEl = openerEl || null;
+
+      setSheetTitle(mainRow);
+
+      overlay.classList.remove('is-hidden');
+      document.body.classList.add('sheet-open');
+
+      // Focus sheet for accessibility
+      const sheet = overlay.querySelector('.sheet');
+      if(sheet && sheet.focus) sheet.focus();
+    }
+
+    function closeMonthSheet(){
+      const overlay = $('#monthSheetOverlay');
+      if(!overlay) return;
+
+      // Restore the panel back to its row host
+      if(sheetState.panelEl && sheetState.hostEl){
+        var _td = sheetState.hostEl.querySelector('td'); if(_td) _td.appendChild(sheetState.panelEl);
+      }
+
+      overlay.classList.add('is-hidden');
+      document.body.classList.remove('sheet-open');
+
+      const opener = sheetState.openerEl;
+      sheetState.isOpen = false;
+      sheetState.mainRow = null;
+      sheetState.panelEl = null;
+      sheetState.hostEl = null;
+      sheetState.openerEl = null;
+
+      if(opener && opener.focus) opener.focus();
+    }
+
+    function resetOverridesForActive(){
+      const mainRow = sheetState.mainRow;
+      if(!mainRow) return;
+      const prob = getProbValue(mainRow);
+      const monthSelects = getMonthSelects(mainRow);
+      monthSelects.forEach(s => {
+        s.dataset.override = '';
+        s.value = prob || '';
+        if(!prob) s.value = '';
+        updateSelectColor(s);
+      });
+      updateOverrideSummary(mainRow);
+      scheduleSaveDraft();
+    }
+
+    function initMonthSheet(){
+      const overlay = $('#monthSheetOverlay');
+      if(!overlay) return;
+
+      overlay.addEventListener('click', (e) => {
+        const target = e.target;
+        if(!target) return;
+        if(target.matches('[data-action="close"], .sheet-backdrop')){
+          closeMonthSheet();
+        }
+      });
+
+      const closeBtn = $('#sheetCloseBtn');
+      if(closeBtn) closeBtn.addEventListener('click', closeMonthSheet);
+
+      const doneBtn = $('#sheetDoneBtn');
+      if(doneBtn) doneBtn.addEventListener('click', closeMonthSheet);
+
+      const resetBtn = $('#sheetResetBtn');
+      if(resetBtn) resetBtn.addEventListener('click', resetOverridesForActive);
+
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && sheetState.isOpen){
+          e.preventDefault();
+          closeMonthSheet();
+        }
+      });
+    }
+
+    function buildMatrix(groupKey, items, tbody){
+      tbody.innerHTML = '';
+      items.forEach(item => {
+        const mainTr = createEl('tr');
+        mainTr.dataset.group = groupKey;
+        mainTr.dataset.itemId = item.id;
+        mainTr.dataset.main = '1';
+        mainTr.dataset.mode = 'yes';
+
+        const th = createEl('th', { scope:'row', className:'sticky-col' });
+        const nameSpan = createEl('span', { className:'row-name', textContent:labelForItem(groupKey, item.id, item.label) });
+        th.appendChild(createEl('div', { className:'row-label' }, [nameSpan]));
+        mainTr.appendChild(th);
+
+        // Mode select + months button
+        const tdMode = createEl('td');
+        const modeWrap = createEl('div', { className:'mode-wrap' });
+        const modeSel = createEl('select', { className:'mode-select' });
+        modeSel.appendChild(createEl('option', { value:'yes', textContent:t('mode.yes') }));
+        modeSel.appendChild(createEl('option', { value:'no', textContent:t('mode.no') }));
+        modeSel.appendChild(createEl('option', { value:'depends', textContent:t('mode.depends') }));
+        modeWrap.appendChild(modeSel);
+
+        const monthsBtn = createEl('button', { type:'button', className:'months-btn is-hidden' });
+        monthsBtn.setAttribute('data-role','months-btn');
+        monthsBtn.appendChild(createEl('span', { className:'months-btn-text', textContent:t('row.months') }));
+        const badge = createEl('span', { className:'badge', textContent:'0' });
+        badge.setAttribute('data-role','override-count');
+        monthsBtn.appendChild(badge);
+
+        const monthsMeta = createEl('div', { className:'months-meta is-hidden' });
+        monthsMeta.setAttribute('data-role','months-meta');
+        const summary = createEl('div', { className:'months-summary', textContent:t('row.no_overrides') });
+        summary.setAttribute('data-role','override-summary');
+        monthsMeta.appendChild(summary);
+
+        monthsBtn.addEventListener('click', () => openMonthSheet(mainTr, monthsBtn));
+
+        tdMode.appendChild(modeWrap);
+        tdMode.appendChild(monthsBtn);
+        tdMode.appendChild(monthsMeta);
+        mainTr.appendChild(tdMode);
+
+        // Probability select
+        const tdProb = createEl('td');
+        const probSel = makeProbSelect('prob-select');
+        probSel.dataset.group = groupKey;
+        probSel.dataset.itemId = item.id;
+        probSel.dataset.role = 'prob';
+        tdProb.appendChild(probSel);
+        mainTr.appendChild(tdProb);
+
+        // Detail row (kept hidden, hosts the month panel for the sheet)
+        const detailTr = createEl('tr', { className:'expand-row is-hidden' });
+        detailTr.dataset.group = groupKey;
+        detailTr.dataset.itemId = item.id;
+        detailTr.dataset.detail = '1';
+        const detailTd = createEl('td', { colSpan:3 });
+
+        const panelTitle = createEl('div', { className:'panel-title' }, [
+          createEl('div', { className:'t', textContent:t('sheet.kicker') }),
+          createEl('div', { className:'hint', textContent:t('sheet.subtitle') })
+        ]);
+
+        const grid = createEl('div', { className:'month-grid' });
+        months.forEach(mo => {
+          const cell = createEl('div', { className:'month-cell' });
+          cell.dataset.monthId = mo.id;
+          cell.appendChild(createEl('div', { className:'m-label', textContent: monthLabel(mo.id) }));
+          const s = makeProbSelect('prob-select');
+          s.dataset.group = groupKey;
+          s.dataset.itemId = item.id;
+          s.dataset.monthId = mo.id;
+          s.dataset.role = 'month';
+          s.disabled = true; // until depends
+          s.addEventListener('change', () => {
+            setMonthOverrideFlag(mainTr, s);
+            updateOverrideSummary(mainTr);
+            scheduleSaveDraft();
+          });
+          cell.appendChild(s);
+          grid.appendChild(cell);
+        });
+
+        const panel = createEl('div', { className:'month-panel' }, [panelTitle, grid]);
+        detailTd.appendChild(panel);
+        detailTr.appendChild(detailTd);
+
+        // Wiring
+        probSel.addEventListener('change', () => {
+          syncMonthsToProb(mainTr, { force:false });
+          scheduleSaveDraft();
+        });
+
+        modeSel.addEventListener('change', () => {
+          applyMode(mainTr, modeSel);
+          scheduleSaveDraft();
+          if(modeSel.value === 'depends'){
+            // mimic old behavior: open month view immediately
+            openMonthSheet(mainTr, monthsBtn);
+          }
+        });
+
+        // Initialize row state
+        applyMode(mainTr, modeSel);
+
+        tbody.appendChild(mainTr);
+        tbody.appendChild(detailTr);
+      });
+    }
+
+    function collectGroup(groupKey){
+      const out = {};
+      const rows = document.querySelectorAll('tbody[data-group="' + groupKey + '"] tr[data-main="1"]');
+      rows.forEach(mainRow => {
+        const itemId = mainRow.dataset.itemId;
+        const modeSel = mainRow.querySelector('select.mode-select');
+        const mode = modeSel ? modeSel.value : 'yes';
+        const probSel = mainRow.querySelector('select.prob-select[data-role="prob"]');
+        const probability = probSel ? (probSel.value || null) : null;
+
+        let monthsObj = {};
+        let overridesObj = {};
+        months.forEach(mo => { monthsObj[mo.id] = null; overridesObj[mo.id] = false; });
+
+        const sels = document.querySelectorAll('select.prob-select[data-role="month"][data-group="' + groupKey + '"][data-item-id="' + itemId + '"]');
+        sels.forEach(s => {
+          const mId = s.dataset.monthId;
+          monthsObj[mId] = s.value || null;
+          overridesObj[mId] = (s.dataset.override === '1');
+        });
+
+        out[itemId] = {
+          mode,
+          enabled: mode !== 'no',
+          probability,
+          months: monthsObj,
+          overrides: overridesObj
+        };
+      });
+      return out;
+    }
+
+    function buildPrettyMessage(snapshot){
+      const lines = [];
+      const push = (s='') => lines.push(s);
+
+      push(t('pretty.title'));
+      push('');
+      push(t('pretty.operator') + ': ' + (snapshot.operatorName || ''));
+      push(t('pretty.camp') + ': ' + (snapshot.campName || ''));
+      push(t('pretty.email') + ': ' + (snapshot.email || ''));
+      if(snapshot.website) push(t('pretty.website') + ': ' + snapshot.website);
+      if(snapshot.notes){
+        push('');
+        push(t('pretty.notes') + ':');
+        push(String(snapshot.notes).trim());
+      }
+
+      function section(title, groupObj, labelsMap){
+        push('');
+        push('---');
+        push(title);
+        push('');
+
+        const yesLines = [];
+        const depLines = [];
+        const noLines = [];
+
+        for(const [id, rec] of Object.entries(groupObj || {})){
+          const label = (labelsMap && labelsMap[id]) ? labelsMap[id] : id;
+          const mode = rec && rec.mode ? rec.mode : (rec && rec.enabled ? 'yes' : 'no');
+          if(mode === 'no'){
+            noLines.push(label);
+            continue;
+          }
+          if(mode === 'depends'){
+            const base = (rec && rec.probability) ? (String(rec.probability) + '%') : '—';
+            const ov = (rec && rec.overrides) ? rec.overrides : {};
+            const mm = (rec && rec.months) ? rec.months : {};
+            const parts = [];
+            const order = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+            order.forEach(mo => {
+              if(!ov[mo]) return;
+              const v = mm[mo];
+              if(v !== null && v !== undefined && String(v).trim() !== '') parts.push(monthLabel(mo) + ' ' + v + '%');
+              else parts.push(monthLabel(mo) + ' —');
+            });
+            if(parts.length) depLines.push(label + ': ' + t('pretty.base') + ' ' + base + ' | ' + t('pretty.overrides') + ': ' + parts.join(', '));
+            else depLines.push(label + ': ' + t('pretty.base') + ' ' + base + ' ' + t('pretty.no_overrides'));
+            continue;
+          }
+          // yes
+          if(rec.probability) yesLines.push(label + ': ' + rec.probability + '%');
+          else yesLines.push(label + ': —');
+        }
+
+        if(yesLines.length){
+          push(t('pretty.yes'));
+          yesLines.forEach(x => push('- ' + x));
+          push('');
+        }
+        if(depLines.length){
+          push(t('pretty.depends'));
+          depLines.forEach(x => push('- ' + x));
+          push('');
+        }
+        if(noLines.length){
+          push(t('pretty.no'));
+          push(noLines.join(', '));
+        }
+
+        if(!yesLines.length && !depLines.length && !noLines.length){
+          push(t('pretty.none'));
+        }
+      }
+
+      const animalLabels = {};
+      (snapshot._animalsList || []).forEach(x => animalLabels[x.id] = labelForItem('animals', x.id, x.label));
+      const adventureLabels = {};
+      (snapshot._adventuresList || []).forEach(x => adventureLabels[x.id] = labelForItem('adventures', x.id, x.label));
+
+      section(t('pretty.animals'), snapshot.animals, animalLabels);
+      section(t('pretty.adventures'), snapshot.adventures, adventureLabels);
+
+      push('');
+      push('---');
+      push(t('pretty.submitted') + ': ' + (snapshot.submittedAt || ''));
+
+      return lines.join('\n');
+    }
+
+    // Wizard logic
+    const wizardState = {
+      step: 0,
+      stepCount: 4
+    };
+
+    function showStep(nextStep){
+      const steps = $$('.wizard-step');
+      const max = steps.length - 1;
+      const clamped = Math.max(0, Math.min(max, nextStep));
+
+      wizardState.step = clamped;
+
+      steps.forEach(s => s.classList.toggle('is-active', String(s.dataset.step) === String(clamped)));
+
+      // Update buttons
+      const prevBtn = $('#prevBtn');
+      const nextBtn = $('#nextBtn');
+      const submitBtn = $('#submitBtn');
+
+      if(prevBtn) prevBtn.disabled = clamped === 0;
+
+      if(nextBtn) nextBtn.classList.toggle('is-hidden', clamped === max);
+      if(submitBtn) submitBtn.classList.toggle('is-hidden', clamped !== max);
+
+      // Update stepper UI
+      updateWizardUI();
+
+      // Clear status on step change (gentle)
+      setStatus('', '');
+
+      // Persist step
+      scheduleSaveDraft();
+
+      // Bring content into view
+      try{
+        var _wiz = document.getElementById('wizard'); if(_wiz && _wiz.scrollIntoView){ try{ _wiz.scrollIntoView({ behavior: 'smooth', block: 'start' }); }catch(e){ _wiz.scrollIntoView(); } }
+      }catch(e){}
+
+      // Refresh review
+      if(clamped === max) updateReview();
+    }
+
+    function updateWizardUI(){
+      const max = $$('.wizard-step').length - 1;
+      const current = wizardState.step;
+
+      // Stepper pills
+      const items = $$('.stepper-item');
+      items.forEach((it, idx) => {
+        it.classList.toggle('is-current', idx === current);
+        it.classList.toggle('is-complete', idx < current);
+        it.setAttribute('aria-current', idx === current ? 'step' : 'false');
+      });
+
+      const fill = $('#stepperFill');
+      if(fill){
+        const pct = (max === 0) ? 0 : (current / max) * 100;
+        fill.style.width = pct + '%';
+      }
+    }
+
+    function validateDetails(){
+      const requiredIds = ['operatorName','campName','contactEmail'];
+      let firstBad = null;
+      let ok = true;
+
+      requiredIds.forEach(id => {
+        const el = $('#' + id);
+        if(!el) return;
+        const val = (el.value || '').trim();
+        const bad = !val;
+        el.classList.toggle('is-invalid', bad);
+        if(bad && !firstBad) firstBad = el;
+        if(bad) ok = false;
+      });
+
+      if(!ok){
+        setStatus(t('status.details_required'), 'error');
+        try{ firstBad && firstBad.focus(); }catch(e){}
+      }
+      return ok;
+    }
+
+    // Review step
+    function countsFromGroup(groupObj){
+      let yes = 0, no = 0, depends = 0;
+      Object.values(groupObj || {}).forEach(rec => {
+        const m = rec && rec.mode ? rec.mode : (rec && rec.enabled ? 'yes' : 'no');
+        if(m === 'no') no++;
+        else if(m === 'depends') depends++;
+        else yes++;
+      });
+      return { yes, no, depends };
+    }
+
+    function renderStats(container, counts){
+      if(!container) return;
+      container.innerHTML = '';
+      const make = (labelKey, n) => {
+        const pill = createEl('div', { className:'stat' });
+        pill.appendChild(createEl('div', { className:'stat-num', textContent:String(n) }));
+        pill.appendChild(createEl('div', { className:'stat-label', textContent:t(labelKey) }));
+        return pill;
+      };
+      container.appendChild(make('review.yes', counts.yes));
+      container.appendChild(make('review.depends', counts.depends));
+      container.appendChild(make('review.no', counts.no));
+    }
+
+    function updateReview(){
+      // Details
+      const op = ((($('#operatorName') && $('#operatorName').value) ? $('#operatorName').value : '')).trim();
+      const camp = ((($('#campName') && $('#campName').value) ? $('#campName').value : '')).trim();
+      const email = ((($('#contactEmail') && $('#contactEmail').value) ? $('#contactEmail').value : '')).trim();
+      const website = ((($('#website') && $('#website').value) ? $('#website').value : '')).trim();
+
+      const setText = (id, v) => { const el = $('#' + id); if(el) el.textContent = v || '—'; };
+      setText('reviewOperator', op);
+      setText('reviewCamp', camp);
+      setText('reviewEmail', email);
+      setText('reviewWebsite', website || (t('review.optional')));
+
+      // Group counts
+      try{
+        const a = countsFromGroup(collectGroup('animals'));
+        const adv = countsFromGroup(collectGroup('adventures'));
+        renderStats($('#reviewAnimalsStats'), a);
+        renderStats($('#reviewAdventuresStats'), adv);
+      }catch(e){}
+    }
+
+    // Autosave
+    let saveTimer = null;
+    let saveInFlight = false;
+
+    function setSaveChip(stateKey){
+      saveChipStateKey = stateKey;
+      const chip = $('#saveChip');
+      if(!chip) return;
+      chip.textContent = t(stateKey);
+      chip.classList.toggle('is-saving', stateKey === 'autosave.saving');
+      chip.classList.toggle('is-saved', stateKey === 'autosave.saved' || stateKey === 'autosave.ready' || stateKey === 'autosave.restored');
+    }
+
+    function buildDraft(){
+      return {
+        version: DRAFT_VERSION,
+        savedAt: new Date().toISOString(),
+        lang: currentLang,
+        step: wizardState.step,
+        fields: {
+          operatorName: ($('#operatorName') && $('#operatorName').value ? $('#operatorName').value : ''),
+          campName: ($('#campName') && $('#campName').value ? $('#campName').value : ''),
+          email: ($('#contactEmail') && $('#contactEmail').value ? $('#contactEmail').value : ''),
+          website: ($('#website') && $('#website').value ? $('#website').value : ''),
+          notes: ($('#notes') && $('#notes').value ? $('#notes').value : '')
+        },
+        animals: collectGroup('animals'),
+        adventures: collectGroup('adventures')
+      };
+    }
+
+    function saveDraftNow(){
+      if(saveInFlight) return;
+      saveInFlight = true;
+      try{
+        setSaveChip('autosave.saving');
+        const payload = buildDraft();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+        setSaveChip('autosave.saved');
+      }catch(e){
+        // localStorage might be blocked; fail silently
+        setSaveChip(saveChipStateKey || 'autosave.ready');
+      }finally{
+        saveInFlight = false;
+      }
+    }
+
+    function scheduleSaveDraft(){
+      if(saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveDraftNow, 350);
+    }
+
+    function restoreDraft(){
+      try{
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if(!raw) return false;
+        const data = JSON.parse(raw);
+        if(!data || data.version !== DRAFT_VERSION) return false;
+
+        // Restore fields
+        const f = data.fields || {};
+        if($('#operatorName')) $('#operatorName').value = f.operatorName || '';
+        if($('#campName')) $('#campName').value = f.campName || '';
+        if($('#contactEmail')) $('#contactEmail').value = f.email || '';
+        if($('#website')) $('#website').value = f.website || '';
+        if($('#notes')) $('#notes').value = f.notes || '';
+
+        // Restore matrices
+        function restoreGroup(groupKey, groupObj){
+          const rows = document.querySelectorAll('tbody[data-group="' + groupKey + '"] tr[data-main="1"]');
+          rows.forEach(mainRow => {
+            const id = mainRow.dataset.itemId;
+            const rec = groupObj ? groupObj[id] : null;
+            if(!rec) return;
+
+            const modeSel = mainRow.querySelector('select.mode-select');
+            const probSel = mainRow.querySelector('select.prob-select[data-role="prob"]');
+            if(modeSel) modeSel.value = rec.mode || 'yes';
+            applyMode(mainRow, modeSel || { value: rec.mode || 'yes' });
+
+            if(probSel){
+              probSel.value = (rec.probability !== null && rec.probability !== undefined) ? String(rec.probability) : '';
+              updateSelectColor(probSel);
+            }
+
+            // Month values + overrides
+            const monthSelects = getMonthSelects(mainRow);
+            monthSelects.forEach(s => {
+              const mId = s.dataset.monthId;
+              const v = rec.months ? rec.months[mId] : null;
+              s.value = (v !== null && v !== undefined) ? String(v) : '';
+              updateSelectColor(s);
+              const ov = rec.overrides ? rec.overrides[mId] : false;
+              s.dataset.override = ov ? '1' : '';
+            });
+
+            // Re-run mode to ensure disabled states are correct and sync non-overrides to prob
+            if(modeSel) applyMode(mainRow, modeSel);
+            updateOverrideSummary(mainRow);
+          });
+        }
+
+        restoreGroup('animals', data.animals);
+        restoreGroup('adventures', data.adventures);
+
+        // Restore step
+        const step = typeof data.step === 'number' ? data.step : 0;
+        wizardState.step = step;
+        setSaveChip('autosave.restored');
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    function initAutosave(){
+      setSaveChip('autosave.ready');
+
+      const form = $('#operatorSurveyForm');
+      if(!form) return;
+
+      // Save on any change (debounced)
+      form.addEventListener('input', scheduleSaveDraft, true);
+      form.addEventListener('change', scheduleSaveDraft, true);
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      const animalsBody = $('#animalsBody');
+      const adventuresBody = $('#adventuresBody');
+
+      buildMatrix('animals', animals, animalsBody);
+      buildMatrix('adventures', adventures, adventuresBody);
+
+      verifyTranslations();
+      initLanguageSwitcher();
+      initMonthSheet();
+      initAutosave();
+
+      const hadDraft = restoreDraft();
+
+      applyI18n(currentLang);
+
+      // Optional: prefill from query string (?operator=...&camp=...&email=...)
+      try{
+        const params = new URLSearchParams(window.location.search);
+        if(params.has('operator')){
+          const op = $('#operatorName');
+          if(op) op.value = decodeURIComponent(params.get('operator'));
+        }
+        if(params.has('camp')){
+          const camp = $('#campName');
+          if(camp) camp.value = decodeURIComponent(params.get('camp'));
+        }
+        if(params.has('email')){
+          const em = $('#contactEmail');
+          if(em) em.value = decodeURIComponent(params.get('email'));
+        }
+      }catch(e){}
+
+      // Wizard buttons
+      var _prevBtn = document.getElementById('prevBtn'); if(_prevBtn) _prevBtn.addEventListener('click', function(){ showStep(wizardState.step - 1); });
+      var _nextBtn = document.getElementById('nextBtn'); if(_nextBtn) _nextBtn.addEventListener('click', function(){
+        if(wizardState.step === 0){
+          if(!validateDetails()) return;
+        }
+        showStep(wizardState.step + 1);
+      });
+
+      // Stepper click navigation (backwards only to keep validation sane)
+      $$('.stepper-item').forEach((it, idx) => {
+        it.addEventListener('click', () => {
+          if(idx <= wizardState.step){
+            showStep(idx);
+          }
+        });
+      });
+
+      // Review edit links
+      $$('[data-go-step]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const s = parseInt(btn.getAttribute('data-go-step') || '0', 10);
+          showStep(s);
+        });
+      });
+
+      // Set initial step (draft or start)
+      showStep(hadDraft ? wizardState.step : 0);
+
+      const form = $('#operatorSurveyForm');
+
+      function ensureHiddenField(name, id){
+        let el = form.querySelector('input[name="' + name + '"]');
+        if(!el){
+          el = document.createElement('input');
+          el.type = 'hidden';
+          el.name = name;
+          if(id) el.id = id;
+          form.appendChild(el);
+        }
+        return el;
+      }
+
+      form.addEventListener('submit', function(event){
+        const operatorName = ($('#operatorName').value || '').trim();
+        const campName = ($('#campName').value || '').trim();
+        const email = ($('#contactEmail').value || '').trim();
+
+        if(!operatorName || !campName || !email){
+          event.preventDefault();
+          setStatus(t('status.missing'), 'error');
+          showStep(0);
+          validateDetails();
+          return;
+        }
+
+        const submitBtn = $('#submitBtn');
+        if(submitBtn) submitBtn.disabled = true;
+
+        const apiBase = (CONFIG.API_BASE || '').trim().replace(/\/$/,'');
+        const formEndpoint = (CONFIG.FORM_ENDPOINT || '').trim();
+        const mailtoTo = (CONFIG.MAILTO_FALLBACK_TO || '').trim();
+
+        let mode = '';
+        if(formEndpoint && /^https?:\/\//i.test(formEndpoint)){
+          mode = 'formspree';
+          form.setAttribute('action', formEndpoint);
+          form.setAttribute('method', 'POST');
+        }else if(apiBase && /^https?:\/\//i.test(apiBase)){
+          mode = 'api';
+        }else if(mailtoTo){
+          mode = 'mailto';
+        }else{
+          mode = 'none';
+        }
+
+        if(mode === 'formspree'){
+          const animalsFull = collectGroup('animals');
+          const adventuresFull = collectGroup('adventures');
+
+          const snapshot = {
+            operatorName,
+            campName,
+            email,
+            website: (($('#website').value || '').trim()),
+            notes: (($('#notes').value || '').trim()),
+            animals: animalsFull,
+            adventures: adventuresFull,
+            submittedAt: new Date().toISOString()
+          };
+
+          function compactGroup(groupObj){
+            const yes = {};
+            const depends = {};
+            const disabled = [];
+            for(const [id, rec] of Object.entries(groupObj || {})){
+              const m = rec && rec.mode ? rec.mode : (rec && rec.enabled ? 'yes' : 'no');
+              if(m === 'no'){
+                disabled.push(id);
+                continue;
+              }
+              if(m === 'depends'){
+                const mm = (rec && rec.months) ? rec.months : {};
+                const ov = (rec && rec.overrides) ? rec.overrides : {};
+                const picked = {};
+                for(const [mo, v] of Object.entries(mm)){
+                  if(!ov[mo]) continue;
+                  if(v !== null && v !== undefined && String(v).trim() !== ''){
+                    picked[mo] = v;
+                  }else{
+                    picked[mo] = '';
+                  }
+                }
+                depends[id] = picked;
+              } else {
+                yes[id] = rec && rec.probability ? rec.probability : '';
+              }
+            }
+            return { yes, depends, disabled };
+          }
+
+          const a = compactGroup(animalsFull);
+          const adv = compactGroup(adventuresFull);
+
+          const compact = {
+            operatorName: snapshot.operatorName,
+            campName: snapshot.campName,
+            email: snapshot.email,
+            website: snapshot.website,
+            notes: snapshot.notes,
+            animals: { yes: a.yes, depends: a.depends },
+            adventures: { yes: adv.yes, depends: adv.depends },
+            animals_disabled: a.disabled,
+            adventures_disabled: adv.disabled,
+            submittedAt: snapshot.submittedAt
+          };
+
+          const fullForChatGPT = {
+            operatorName: snapshot.operatorName,
+            campName: snapshot.campName,
+            email: snapshot.email,
+            website: snapshot.website,
+            notes: snapshot.notes,
+            animals: {},
+            adventures: {},
+            animals_disabled: a.disabled || [],
+            adventures_disabled: adv.disabled || [],
+            submittedAt: snapshot.submittedAt
+          };
+
+          function normalize(itemsList, groupObj, out){
+            const order = months.map(x => x.id);
+            itemsList.forEach(it => {
+              const rec = groupObj ? groupObj[it.id] : null;
+              if(!rec) return;
+              const m = rec.mode || (rec.enabled ? 'yes' : 'no');
+              if(m === 'no') return;
+              const prob = rec.probability || null;
+              const mm = {};
+              if(m === 'yes'){
+                order.forEach(k => { mm[k] = prob; });
+              }else{
+                const src = rec.months || {};
+                const ov = rec.overrides || {};
+                order.forEach(k => {
+                  if(ov[k]){
+                    const v = src[k];
+                    mm[k] = (v !== undefined && v !== null && String(v).trim() !== '') ? String(v) : null;
+                  }else{
+                    mm[k] = prob;
+                  }
+                });
+              }
+              out[it.id] = { mode: m, probability: prob, months: mm };
+            });
+          }
+
+          normalize(animals, animalsFull, fullForChatGPT.animals);
+          normalize(adventures, adventuresFull, fullForChatGPT.adventures);
+
+          ensureHiddenField('_subject').value = t('subject.prefix') + campName;
+          ensureHiddenField('_replyto').value = email;
+
+          ensureHiddenField('matrix_json','matrix_json').value = JSON.stringify(compact, null, 2);
+          ensureHiddenField('full_json').value = JSON.stringify(fullForChatGPT, null, 2);
+
+          try{
+            snapshot._animalsList = animals;
+            snapshot._adventuresList = adventures;
+            const msgEl = document.getElementById('messageField');
+            if(msgEl) msgEl.value = buildPrettyMessage(snapshot);
+            ensureHiddenField('summary').value = (msgEl && msgEl.value) ? msgEl.value : '';
+          }catch(e){}
+
+          setStatus(t('status.submitting'), '');
+          // keep a light safeguard so button re-enables if formspree hiccups
+          setTimeout(() => { if(submitBtn) submitBtn.disabled = false; }, 8000);
+
+          // Optional: clear draft after submit attempt (do not break back button)
+          try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+
+          return; // allow native POST
+        }
+
+        event.preventDefault();
+
+        (async () => {
+          try{
+            if(mode === 'api'){
+              setStatus(t('status.submitting'), '');
+              const submitUrl = apiBase + '/api/operator-survey';
+              const payload = {
+                operatorName,
+                campName,
+                email,
+                website: (($('#website').value || '').trim()),
+                notes: (($('#notes').value || '').trim()),
+                animals: collectGroup('animals'),
+                adventures: collectGroup('adventures'),
+                meta: {
+                  source: 'operator-survey-probability-v3',
+                  userAgent: navigator.userAgent,
+                  submittedAt: new Date().toISOString()
+                }
+              };
+
+              const resp = await fetch(submitUrl, {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+                body: JSON.stringify(payload)
+              });
+
+              if(!resp.ok){
+                let detail = '';
+                try{ detail = await resp.text(); }catch(e){}
+                throw new Error('Bad response: ' + resp.status + (detail ? ' - ' + detail : ''));
+              }
+
+              setStatus(t('status.saved'), 'ok');
+
+              try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+
+            }else if(mode === 'mailto'){
+              const subject = encodeURIComponent(t('subject.prefix') + campName);
+              const bodyLines = [
+                t('pretty.operator') + ': ' + operatorName,
+                t('pretty.camp') + ': ' + campName,
+                t('pretty.email') + ': ' + email,
+                t('pretty.website') + ': ' + (($('#website').value || '').trim()),
+                t('pretty.notes') + ': ' + (($('#notes').value || '').trim()),
+                '',
+                t('mail.note1'),
+                t('mail.note2')
+              ];
+              const body = encodeURIComponent(bodyLines.join('\n'));
+              window.location.href = 'mailto:' + mailtoTo + '?subject=' + subject + '&body=' + body;
+              setStatus(t('status.mailto'), 'ok');
+              try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+
+            }else{
+              setStatus(t('status.not_configured'), 'error');
+            }
+          }catch(err){
+            console.error(err);
+            setStatus(t('status.failed'), 'error');
+          }finally{
+            if(submitBtn) submitBtn.disabled = false;
+          }
+        })();
+      });
+    });
+  })();
+</script>
+</body>
+</html>
