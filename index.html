@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- This page uses a separate CSS file for easier design iteration -->
-  <link rel="stylesheet" href="SafariMatcherSurveyWizard.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
           </div>
 
           <div class="wizard-meta" aria-label="Survey meta">
-            <span class="chip" data-i18n="meta.eta">Est. 6–10 min</span>
+            <span class="chip" id="timeLeftChip"></span>
             <span class="save-chip" id="saveChip" data-i18n="autosave.ready">Auto‑save on</span>
           </div>
         </div>
@@ -85,8 +85,8 @@
                 </div>
 
                 <div class="field">
-                  <label for="website" data-i18n="label.website">Website (optional)</label>
-                  <input id="website" name="website" type="url" placeholder="https://&hellip;" data-i18n-placeholder="placeholder.website" inputmode="url">
+                  <label for="website" data-i18n="label.website">Website</label>
+                  <input id="website" name="website" type="url" placeholder="https://&hellip;" data-i18n-placeholder="placeholder.website" inputmode="url" required autocomplete="url">
                   <div class="field-help" data-i18n="help.website">Helpful for verifying details and improving match quality.</div>
                 </div>
               </div>
@@ -234,7 +234,7 @@
           <button type="button" class="btn-secondary" id="prevBtn" data-i18n="nav.back">Back</button>
           <div class="nav-spacer"></div>
           <button type="button" class="btn-secondary" id="nextBtn" data-i18n="nav.next">Next</button>
-          <button type="submit" class="btn-primary is-hidden" id="submitBtn" data-i18n="submit.button">Submit survey</button>
+          <button type="submit" class="btn-primary btn-submit is-hidden" id="submitBtn" data-i18n="submit.button">Submit survey</button>
         </footer>
 
         <div class="form-status-wrap">
@@ -380,9 +380,9 @@
 
         'survey.title':'Operator Survey — Animals & Adventures',
         'survey.subtitle':'Quick, visual, month-by-month availability — designed for accuracy and trust.',
-        'meta.eta':'Est. 6–10 min',
-
-        'autosave.ready':'Auto‑save on',
+        
+        'meta.time_left':'Time left: ~{n} min',
+'autosave.ready':'Auto‑save on',
         'autosave.saving':'Saving…',
         'autosave.saved':'Saved',
         'autosave.restored':'Draft restored',
@@ -410,8 +410,7 @@
         'placeholder.camp_name':'e.g. Mara Plains Camp',
         'label.contact_email':'Contact email',
         'placeholder.contact_email':'you@example.com',
-        'label.website':'Website (optional)',
-        'placeholder.website':'https://…',
+        'label.website':'Website', 'placeholder.website':'https://…',
         'label.notes':'Anything we should note? (optional)',
         'placeholder.notes':'E.g. seasonal notes, private concession rules, migrations, recent reintroductions, etc.',
 
@@ -500,9 +499,9 @@
 
         'survey.title':'Utafiti wa Mwendeshaji — Wanyama na Matukio',
         'survey.subtitle':'Upatikanaji wa mwezi kwa mwezi, kwa njia safi na ya kuaminika.',
-        'meta.eta':'Dakika 6–10 (kadirio)',
-
-        'autosave.ready':'Hifadhi kiotomatiki iko tayari',
+        
+        'meta.time_left':'Muda uliobaki: ~{n} dk',
+'autosave.ready':'Hifadhi kiotomatiki iko tayari',
         'autosave.saving':'Inahifadhi…',
         'autosave.saved':'Imehifadhiwa',
         'autosave.restored':'Rasimu imerejeshwa',
@@ -527,7 +526,7 @@
         'label.operator_name':'Jina na jukumu lako','placeholder.operator_name':'mf. Jane Doe, Meneja wa Uhifadhi',
         'label.camp_name':'Jina la kambi / lodge','placeholder.camp_name':'mf. Mara Plains Camp',
         'label.contact_email':'Barua pepe ya mawasiliano','placeholder.contact_email':'you@example.com',
-        'label.website':'Tovuti (hiari)','placeholder.website':'https://…',
+        'label.website':'Tovuti', 'placeholder.website':'https://…',
         'label.notes':'Kuna chochote cha kuzingatia? (hiari)',
         'placeholder.notes':'Mf. maelezo ya msimu, sheria za concession binafsi, uhamaji, kurejeshwa kwa spishi, n.k.',
 
@@ -598,9 +597,9 @@
 
         'survey.title':'استبيان المشغل — الحيوانات والتجارب',
         'survey.subtitle':'توفر شهري واضح وسهل — مصمم للدقة والثقة.',
-        'meta.eta':'٦–١٠ دقائق تقريبًا',
-
-        'autosave.ready':'الحفظ التلقائي مفعّل',
+        
+        'meta.time_left':'الوقت المتبقي: حوالي {n} د',
+'autosave.ready':'الحفظ التلقائي مفعّل',
         'autosave.saving':'جارٍ الحفظ…',
         'autosave.saved':'تم الحفظ',
         'autosave.restored':'تم استعادة المسودة',
@@ -625,7 +624,7 @@
         'label.operator_name':'اسمك ودورك','placeholder.operator_name':'مثال: Jane Doe، مدير الحجوزات',
         'label.camp_name':'اسم المخيم / النُزل','placeholder.camp_name':'مثال: Mara Plains Camp',
         'label.contact_email':'بريد التواصل','placeholder.contact_email':'you@example.com',
-        'label.website':'الموقع الإلكتروني (اختياري)','placeholder.website':'https://…',
+        'label.website':'الموقع الإلكتروني', 'placeholder.website':'https://…',
         'label.notes':'أي ملاحظات يجب أن نعرفها؟ (اختياري)','placeholder.notes':'مثال: ملاحظات موسمية، قواعد امتياز خاص، هجرات، إعادة توطين حديثة...',
 
         'animals.title':'الحيوانات — الاحتمال',
@@ -697,9 +696,9 @@
 
         'survey.title':'Enquête opérateur — Animaux et expériences',
         'survey.subtitle':'Disponibilités mois par mois, claires et fiables.',
-        'meta.eta':'Env. 6–10 min',
-
-        'autosave.ready':'Sauvegarde auto activée',
+        
+        'meta.time_left':'Temps restant : ~{n} min',
+'autosave.ready':'Sauvegarde auto activée',
         'autosave.saving':'Sauvegarde…',
         'autosave.saved':'Enregistré',
         'autosave.restored':'Brouillon restauré',
@@ -727,8 +726,7 @@
         'placeholder.camp_name':'ex. Mara Plains Camp',
         'label.contact_email':'E-mail de contact',
         'placeholder.contact_email':'you@example.com',
-        'label.website':'Site web (optionnel)',
-        'placeholder.website':'https://…',
+        'label.website':'Site web', 'placeholder.website':'https://…',
         'label.notes':'Quelque chose à signaler ? (optionnel)',
         'placeholder.notes':'Ex. notes saisonnières, règles de concession privée, migrations, réintroductions récentes, etc.',
 
@@ -817,9 +815,9 @@
 
         'survey.title':'Binciken Mai Gudanarwa — Dabbobi da Abubuwan Kasada',
         'survey.subtitle':'Samuwa wata-wata a sarari — don daidaito da amincewa.',
-        'meta.eta':'Kimanin minti 6–10',
-
-        'autosave.ready':'Ajiya ta atomatik a kunne',
+        
+        'meta.time_left':'Lokacin da ya rage: ~{n} min',
+'autosave.ready':'Ajiya ta atomatik a kunne',
         'autosave.saving':'Ana ajiyewa…',
         'autosave.saved':'An ajiye',
         'autosave.restored':'An dawo da daftarin',
@@ -844,7 +842,7 @@
         'label.operator_name':'Sunanka da matsayinka','placeholder.operator_name':'mis. Jane Doe, Manajan Ajiyar Wuri',
         'label.camp_name':'Sunan sansani / lodge','placeholder.camp_name':'mis. Mara Plains Camp',
         'label.contact_email':'Imel na tuntuɓa','placeholder.contact_email':'you@example.com',
-        'label.website':'Yanar gizo (na zaɓi)','placeholder.website':'https://…',
+        'label.website':'Yanar gizo', 'placeholder.website':'https://…',
         'label.notes':'Akwai abin da ya kamata mu lura da shi? (na zaɓi)',
         'placeholder.notes':'mis. bayanan yanayi, dokokin concession na sirri, ƙaura, sake gabatarwa...',
 
@@ -916,9 +914,9 @@
 
         'survey.title':'Ìwádìí Olùdarí — Ẹranko àti Ìrìnàjò',
         'survey.subtitle':'Ìwàláàyè oṣù kọọkan ní kedere — fún ìdánilẹ́kọ̀ọ́ àti ìgbẹ́kẹ̀lé.',
-        'meta.eta':'Ìṣẹ́jú 6–10 (àfojúsùn)',
-
-        'autosave.ready':'Ìfipamọ́ aifọwọyi wa',
+        
+        'meta.time_left':'Àkókò tó kù: ~{n} ìṣ',
+'autosave.ready':'Ìfipamọ́ aifọwọyi wa',
         'autosave.saving':'Ń fipamọ́…',
         'autosave.saved':'Ti fipamọ́',
         'autosave.restored':'A ti gba daftà padà',
@@ -943,7 +941,7 @@
         'label.operator_name':'Orúkọ àti ipa rẹ','placeholder.operator_name':'àpẹẹrẹ: Jane Doe, Alákóso Ìfipamọ́',
         'label.camp_name':'Orúkọ ibùdó / lodge','placeholder.camp_name':'àpẹẹrẹ: Mara Plains Camp',
         'label.contact_email':'Ímẹ́lì ìbánisọ̀rọ̀','placeholder.contact_email':'you@example.com',
-        'label.website':'Ojúlé ayé (àṣàyàn)','placeholder.website':'https://…',
+        'label.website':'Ojú-òpó wẹẹbù', 'placeholder.website':'https://…',
         'label.notes':'Ṣé ohun míì wà tí a gbọ́dọ̀ mọ̀? (àṣàyàn)',
         'placeholder.notes':'àpẹẹrẹ: àlàyé àkókò ọdún, òfin concession aládani, ìṣílọ̀, ìtúnfi ẹ̀dá sílẹ̀...',
 
@@ -1748,6 +1746,88 @@
       step: 0,
       stepCount: 4
     };
+    // Time-left + granular progress (design-only enhancement; no functional changes)
+    const TIME_LEFT_TOTAL_MIN = 9; // calibrated to the original 6–10 min estimate
+
+    function fmt(template, vars){
+      return String(template || '').replace(/\{(\w+)\}/g, function(_, k){
+        return (vars && (k in vars)) ? String(vars[k]) : '';
+      });
+    }
+
+    function countTruthy(arr){ return (arr || []).reduce((a,v)=>a + (v?1:0), 0); }
+
+    function computeDetailsCompletion(){
+      const ids = ['operatorName','campName','contactEmail','website'];
+      let filled = 0;
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        const v = (el.value || '').trim();
+        if(v && (!el.checkValidity || el.checkValidity())) filled++;
+      });
+      return filled / ids.length;
+    }
+
+    function computeGroupCompletion(groupKey){
+      const rows = document.querySelectorAll('tbody[data-group="' + groupKey + '"] tr[data-main="1"]');
+      const total = rows.length || 1;
+      let done = 0;
+
+      rows.forEach(r => {
+        const modeSel = r.querySelector('select.mode-select');
+        const mode = modeSel ? modeSel.value : 'yes';
+        if(mode === 'no'){ done++; return; }
+
+        const probSel = r.querySelector('select.prob-select[data-role="prob"]');
+        const prob = probSel ? (probSel.value || '') : '';
+        if(prob){ done++; return; }
+
+        // If depends, allow completion if any month selection is set
+        if(mode === 'depends'){
+          const itemId = r.dataset.itemId;
+          const sels = document.querySelectorAll('select.prob-select[data-role="month"][data-group="' + groupKey + '"][data-item-id="' + itemId + '"]');
+          let any = false;
+          sels.forEach(s => { if((s.value || '').trim()){ any = true; } });
+          if(any){ done++; return; }
+        }
+      });
+
+      return done / total;
+    }
+
+    function computeStepCompletion(stepIdx){
+      if(stepIdx === 0) return computeDetailsCompletion();
+      if(stepIdx === 1) return computeGroupCompletion('animals');
+      if(stepIdx === 2) return computeGroupCompletion('adventures');
+      return 1;
+    }
+
+    let _timeLeftTimer = 0;
+    function updateTimeLeft(){
+      const chip = document.getElementById('timeLeftChip');
+      if(!chip) return;
+
+      const max = $$('.wizard-step').length - 1;
+      const current = wizardState.step;
+
+      const stepFrac = computeStepCompletion(current);
+      const overall = (max === 0) ? 0 : ((current + stepFrac) / max);
+      const clamped = Math.max(0, Math.min(1, overall));
+
+      const mins = Math.max(1, Math.round(TIME_LEFT_TOTAL_MIN * (1 - clamped)));
+      const text = fmt(t('meta.time_left'), { n: mins });
+      chip.textContent = text;
+    }
+
+    function scheduleTimeLeftUpdate(){
+      if(_timeLeftTimer) return;
+      _timeLeftTimer = window.setTimeout(() => {
+        _timeLeftTimer = 0;
+        updateWizardUI();
+      }, 220);
+    }
+
 
     function showStep(nextStep){
       const steps = $$('.wizard-step');
@@ -1800,13 +1880,16 @@
 
       const fill = $('#stepperFill');
       if(fill){
-        const pct = (max === 0) ? 0 : (current / max) * 100;
-        fill.style.width = pct + '%';
+        const stepFrac = computeStepCompletion(current);
+        const pct = (max === 0) ? 0 : ((current + stepFrac) / max) * 100;
+        fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
       }
+
+      updateTimeLeft();
     }
 
     function validateDetails(){
-      const requiredIds = ['operatorName','campName','contactEmail'];
+      const requiredIds = ['operatorName','campName','contactEmail','website'];
       let firstBad = null;
       let ok = true;
 
@@ -1814,7 +1897,7 @@
         const el = $('#' + id);
         if(!el) return;
         const val = (el.value || '').trim();
-        const bad = !val;
+        const bad = (!val) || (el.checkValidity && !el.checkValidity());
         el.classList.toggle('is-invalid', bad);
         if(bad && !firstBad) firstBad = el;
         if(bad) ok = false;
@@ -1825,6 +1908,34 @@
         try{ firstBad && firstBad.focus(); }catch(e){}
       }
       return ok;
+    }
+
+
+    function attachLiveRequiredValidation(){
+      const ids = ['operatorName','campName','contactEmail','website'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        const handler = () => {
+          const v = (el.value || '').trim();
+          // for url inputs, rely on checkValidity()
+          if(v && (!el.checkValidity || el.checkValidity())){
+            el.classList.remove('is-invalid');
+          }
+        };
+        el.addEventListener('input', handler);
+        el.addEventListener('blur', handler);
+        if(id === 'website'){
+          el.addEventListener('blur', () => {
+            const v = (el.value || '').trim();
+            if(v && !/^https?:\/\//i.test(v)){
+              el.value = 'https://' + v;
+              handler();
+              try{ scheduleSaveDraft(); }catch(e){}
+            }
+          });
+        }
+      });
     }
 
     // Review step
@@ -2013,6 +2124,13 @@
       initMonthSheet();
       initAutosave();
 
+      // Live-clear required-field halo once valid
+      attachLiveRequiredValidation();
+
+      // Update time-left dynamically
+      window.addEventListener('scroll', scheduleTimeLeftUpdate, { passive: true });
+
+
       const hadDraft = restoreDraft();
 
       applyI18n(currentLang);
@@ -2041,6 +2159,20 @@
           if(!validateDetails()) return;
         }
         showStep(wizardState.step + 1);
+      });
+
+      // Recompute progress/time-left as users answer
+      ['operatorName','campName','contactEmail','website','notes'].forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('input', scheduleTimeLeftUpdate);
+        el.addEventListener('change', scheduleTimeLeftUpdate);
+      });
+      document.addEventListener('change', function(e){
+        const t = e && e.target;
+        if(t && (t.classList && (t.classList.contains('mode-select') || t.classList.contains('prob-select')))){
+          scheduleTimeLeftUpdate();
+        }
       });
 
       // Stepper click navigation (backwards only to keep validation sane)
