@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Safari Matcher — Operator Survey</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="logo-slot" aria-label="Safari Matcher logo">SafariMatcher&#8482;</div>
+      <div class="tagline" data-i18n="topbar.tagline">Operator Portal • No Ads • No Partnerships • No Kickbacks • No Bias</div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section class="section">
+      <h1 data-i18n="survey.title">Operator Survey — Animals &amp; Adventures</h1>
+      <p class="lede" data-i18n="survey.intro">
+        Tell us what guests can realistically see and do at your camp, month by month.
+        This helps us match you with better-fit travellers.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="details.title">Camp / lodge details</h2>
+      <p class="lede" data-i18n="details.intro">
+        Usually 3–10 minutes. Fill what matters; skip anything that doesn’t apply.
+      </p>
+
+      <form id="operatorSurveyForm" novalidate action="https://formspree.io/f/xeeeajdg" method="POST">
+        <div class="form-grid">
+          <div class="field">
+            <label for="operatorName" data-i18n="label.operator_name">Your name &amp; role</label>
+            <input id="operatorName" name="operatorName" type="text" required
+                   placeholder="e.g. Jane Doe, Reservations Manager" data-i18n-placeholder="placeholder.operator_name">
+          </div>
+          <div class="field">
+            <label for="campName" data-i18n="label.camp_name">Camp / lodge name</label>
+            <input id="campName" name="campName" type="text" required
+                   placeholder="e.g. Mara Plains Camp" data-i18n-placeholder="placeholder.camp_name">
+          </div>
+          <div class="field">
+            <label for="contactEmail" data-i18n="label.contact_email">Contact email</label>
+            <input id="contactEmail" name="email" type="email" required
+                   placeholder="you@example.com" data-i18n-placeholder="placeholder.contact_email">
+          </div>
+          <div class="field">
+            <label for="website" data-i18n="label.website">Website (optional)</label>
+            <input id="website" name="website" type="url" placeholder="https://&hellip;" data-i18n-placeholder="placeholder.website">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="notes" data-i18n="label.notes">Anything we should note? (optional)</label>
+          <textarea id="notes" name="notes" rows="3"
+                    placeholder="E.g. seasonal notes, private concession rules, migrations, recent reintroductions, etc." data-i18n-placeholder="placeholder.notes"></textarea>
+        </div>
+
+        <!-- Formspree-friendly summary (kept hidden). This prevents thousands of matrix fields cluttering the dashboard. -->
+        <textarea id="messageField" name="message" style="display:none"></textarea>
+
+        <div class="survey-shell">
+          <h3 data-i18n="animals.title">1. Animals — likelihood by month</h3>
+          <p class="small-note" data-i18n="animals.mode_help">
+            Choose <span class="pill-inline pill-yes">Yes</span>, <span class="pill-inline pill-no">No</span>, or <span class="pill-inline pill-yes">Depends on Month</span>.
+            If you choose Depends, a month grid opens for that one row.
+          </p>
+
+          <div class="matrix-wrapper">
+            <table class="matrix-table" aria-describedby="animalsHelp">
+              <thead>
+                <tr>
+                  <th class="sticky-col" data-i18n="table.animal">Animal</th>
+                  <th style="width:180px" data-i18n="table.answer">Answer</th>
+                  <th style="width:140px" data-i18n="table.probability">Probability</th>
+                </tr>
+              </thead>
+              <tbody id="animalsBody" data-group="animals"></tbody>
+            </table>
+          </div>
+          <p id="animalsHelp" class="small-note" data-i18n="animals.help">
+            Percentages are guest-level chances on a typical stay — not guarantees.
+          </p>
+        </div>
+
+        <div class="survey-shell">
+          <h3 data-i18n="adventures.title">2. Adventures — availability by month</h3>
+          <p class="small-note" data-i18n="adventures.mode_help">
+            Choose <span class="pill-inline pill-yes">Yes</span>, <span class="pill-inline pill-no">No</span>, or <span class="pill-inline pill-yes">Depends on Month</span>.
+            If you choose Depends, a month grid opens for that one row.
+          </p>
+
+          <div class="matrix-wrapper">
+            <table class="matrix-table" aria-describedby="adventuresHelp">
+              <thead>
+                <tr>
+                  <th class="sticky-col" data-i18n="table.adventure">Adventure</th>
+                  <th style="width:180px" data-i18n="table.answer">Answer</th>
+                  <th style="width:140px" data-i18n="table.probability">Probability</th>
+                </tr>
+              </thead>
+              <tbody id="adventuresBody" data-group="adventures"></tbody>
+            </table>
+          </div>
+          <p id="adventuresHelp" class="small-note" data-i18n="adventures.help">
+            If something is seasonal (e.g. boating depends on water levels), reflect that here.
+          </p>
+        </div>
+
+        <div class="form-footer">
+          <button type="submit" class="btn-primary" data-i18n="submit.button">Submit survey</button>
+          <p class="small-note" data-i18n="submit.note">
+            By submitting, you confirm these are your best estimates today. You can update them anytime.
+          </p>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div id="langSwitcher">
+    <label id="langSwitcherLabel" for="languageSelect" data-i18n="language.label">Language</label>
+    <select id="languageSelect" aria-label="Select language" data-i18n-aria-label="language.aria_label">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+    </select>
+  </div>
+
+  <script>
+  (function(){
+    const CONFIG = {
+      API_BASE: '',
+      FORM_ENDPOINT: 'https://formspree.io/f/xeeeajdg',
+      MAILTO_FALLBACK_TO: ''
+    };
+
+const months = [
+      { id:'jan', label:'Jan' },
+      { id:'feb', label:'Feb' },
+      { id:'mar', label:'Mar' },
+      { id:'apr', label:'Apr' },
+      { id:'may', label:'May' },
+      { id:'jun', label:'Jun' },
+      { id:'jul', label:'Jul' },
+      { id:'aug', label:'Aug' },
+      { id:'sep', label:'Sep' },
+      { id:'oct', label:'Oct' },
+      { id:'nov', label:'Nov' },
+      { id:'dec', label:'Dec' }
+    ];
+
+    // Full animal list
+    const animals = [
+      { id:'african-lion',           label:'African Lion' },
+      { id:'elephant',               label:'Elephant' },
+      { id:'leopard',                label:'Leopard' },
+      { id:'rhinoceros',             label:'Rhinoceros' },
+      { id:'cape-buffalo',           label:'Cape Buffalo' },
+      { id:'cheetah',                label:'Cheetah' },
+      { id:'spotted-hyena',          label:'Spotted Hyena' },
+      { id:'giraffe',                label:'Giraffe' },
+      { id:'hippopotamus',           label:'Hippopotamus' },
+      { id:'zebra',                  label:'Zebra' },
+      { id:'wildebeest',             label:'Wildebeest' },
+      { id:'kudu',                   label:'Kudu' },
+      { id:'sable-antelope',         label:'Sable Antelope' },
+      { id:'giant-eland',            label:'Giant Eland' },
+      { id:'gemsbok-oryx',           label:'Gemsbok (Oryx)' },
+      { id:'red-hartebeest-topi',    label:'Red Hartebeest / Topi' },
+      { id:'waterbuck',              label:'Waterbuck' },
+      { id:'impala',                 label:'Impala' },
+      { id:'warthog',                label:'Warthog' },
+      { id:'crocodile',              label:'Crocodile' },
+      { id:'serval-caracal',         label:'Serval / Caracal' },
+      { id:'baboon',                 label:'Baboon' },
+      { id:'vervet-monkey',          label:'Vervet Monkey' },
+      { id:'meerkat',                label:'Meerkat' },
+      { id:'mountain-gorilla',       label:'Mountain Gorilla' },
+      { id:'chimpanzee',             label:'Chimpanzee' },
+      { id:'pangolin',               label:'Pangolin' },
+      { id:'jackal-wild-dog',        label:'Jackal/African Wild Dog' },
+      { id:'ostrich',                label:'Ostrich' },
+      { id:'secretary-bird',         label:'Secretary Bird' }
+    ];
+
+    // Full adventures list
+    const adventures = [
+      { id:'great-migration',                 label:'Great Migration' },
+      { id:'night-drive',                     label:'Night Drive' },
+      { id:'guided-walking-safari',           label:'Guided Walking Safari' },
+      { id:'wilderness-hike',                 label:'Wilderness Hike' },
+      { id:'boat-pontoon-safari',             label:'Boat or Pontoon Safari' },
+      { id:'mokoro-dugout-excursion',         label:'Mokoro (Dug-Out Canoe) Excursion' },
+      { id:'canoe-rafting-safari',            label:'Canoe or Rafting Safari' },
+      { id:'hot-air-balloon-flight',          label:'Hot-Air Balloon Flight' },
+      { id:'helicopter-safari',               label:'Helicopter Safari' },
+      { id:'fixed-wing-scenic-flight',        label:'Fixed-Wing Scenic Flight' },
+      { id:'horseback-safari',                label:'Horseback Safari' },
+      { id:'animal-tracking-on-foot',         label:'Animal Tracking on Foot' },
+      { id:'great-ape-trekking',              label:'Great-Ape Trekking' },
+      { id:'photographic-safari-workshop',    label:'Photographic Safari Workshop' },
+      { id:'sleep-out-fly-camping',           label:'Sleep-Out Under the Stars / Fly Camping' },
+      { id:'cultural-village-visit-dance',    label:'Cultural Village Visit & Traditional Dance' },
+      { id:'multi-day-trek',                  label:'Multi-Day Trek (Mountain or Backpacking)' },
+      { id:'zip-line',                        label:'Zip Line' },
+      { id:'trip-to-beach',                   label:'Trip to Beach' },
+      { id:'pool',                            label:'Pool' }
+    ];
+
+    const DEFAULT_LANG = 'en';
+    const LANG_STORAGE_KEY = 'safarimatcher_lang';
+    const SUPPORTED_LANGS = ['en', 'es', 'fr'];
+
+    const translations = {
+      en: {
+        'language.label':'Language',
+        'language.aria_label':'Select language',
+        'topbar.tagline':'Operator Portal • No Ads • No Partnerships • No Kickbacks • No Bias',
+        'survey.title':'Operator Survey — Animals & Adventures',
+        'survey.intro':'Tell us what guests can realistically see and do at your camp, month by month. This helps us match you with better-fit travellers.',
+        'details.title':'Camp / lodge details',
+        'details.intro':'Usually 3–10 minutes. Fill what matters; skip anything that doesn’t apply.',
+        'label.operator_name':'Your name & role',
+        'placeholder.operator_name':'e.g. Jane Doe, Reservations Manager',
+        'label.camp_name':'Camp / lodge name',
+        'placeholder.camp_name':'e.g. Mara Plains Camp',
+        'label.contact_email':'Contact email',
+        'placeholder.contact_email':'you@example.com',
+        'label.website':'Website (optional)',
+        'placeholder.website':'https://…',
+        'label.notes':'Anything we should note? (optional)',
+        'placeholder.notes':'E.g. seasonal notes, private concession rules, migrations, recent reintroductions, etc.',
+        'animals.title':'1. Animals — likelihood by month',
+        'adventures.title':'2. Adventures — availability by month',
+        'animals.mode_help':'Choose {yes}, {no}, or {depends}. If you choose Depends, a month grid opens for that one row.',
+        'adventures.mode_help':'Choose {yes}, {no}, or {depends}. If you choose Depends, a month grid opens for that one row.',
+        'mode.yes':'Yes',
+        'mode.no':'No',
+        'mode.depends':'Depends on Month',
+        'table.animal':'Animal',
+        'table.adventure':'Adventure',
+        'table.answer':'Answer',
+        'table.probability':'Probability',
+        'animals.help':'Percentages are guest-level chances on a typical stay — not guarantees.',
+        'adventures.help':'If something is seasonal (e.g. boating depends on water levels), reflect that here.',
+        'submit.button':'Submit survey',
+        'submit.note':'By submitting, you confirm these are your best estimates today. You can update them anytime.',
+        'panel.monthly':'Monthly breakdown',
+        'panel.diff':'Only fill months that differ.',
+        'status.missing':'Please fill in your name, camp/lodge name, and email.',
+        'status.submitting':'Submitting your answers...',
+        'status.saved':'Thank you - your survey has been saved. You can always update it later.',
+        'status.mailto':'Thanks - your email app should open to send a summary. For full results, please use the configured submission endpoint.',
+        'status.not_configured':'Submission is not configured yet. Please contact SafariMatcher to enable the survey link.',
+        'status.failed':'We could not submit your survey. Please try again, or contact SafariMatcher support.',
+        'subject.prefix':'SafariMatcher Operator Survey - ',
+        'mail.note1':'NOTE: This email fallback does not include the full matrix.',
+        'mail.note2':'Please ask SafariMatcher to enable a secure submission endpoint (recommended).',
+        'pretty.title':'SafariMatcher Operator Survey',
+        'pretty.operator':'Operator',
+        'pretty.camp':'Camp/Lodge',
+        'pretty.email':'Email',
+        'pretty.website':'Website',
+        'pretty.notes':'Notes',
+        'pretty.animals':'Animals',
+        'pretty.adventures':'Adventures',
+        'pretty.yes':'Yes (single probability)',
+        'pretty.depends':'Depends on Month',
+        'pretty.no':'No',
+        'pretty.none':'(No selections provided)',
+        'pretty.submitted':'Submitted',
+        'pretty.base':'Base',
+        'pretty.overrides':'Overrides',
+        'pretty.no_overrides':'(no overrides)',
+        'month.jan':'Jan','month.feb':'Feb','month.mar':'Mar','month.apr':'Apr','month.may':'May','month.jun':'Jun',
+        'month.jul':'Jul','month.aug':'Aug','month.sep':'Sep','month.oct':'Oct','month.nov':'Nov','month.dec':'Dec'
+      },
+      es: {
+        'language.label':'Idioma',
+        'language.aria_label':'Seleccionar idioma',
+        'topbar.tagline':'Portal de Operadores • Sin anuncios • Sin alianzas • Sin comisiones • Sin sesgos',
+        'survey.title':'Encuesta para Operadores — Animales y Experiencias',
+        'survey.intro':'Cuéntenos qué pueden ver y hacer realmente los huéspedes en su campamento, mes a mes. Esto nos ayuda a conectarlo con viajeros más compatibles.',
+        'details.title':'Detalles del campamento / lodge',
+        'details.intro':'Normalmente 3–10 minutos. Complete lo importante; omita lo que no aplique.',
+        'label.operator_name':'Su nombre y cargo',
+        'placeholder.operator_name':'p. ej. Jane Doe, Gerente de Reservas',
+        'label.camp_name':'Nombre del campamento / lodge',
+        'placeholder.camp_name':'p. ej. Mara Plains Camp',
+        'label.contact_email':'Correo de contacto',
+        'placeholder.contact_email':'you@example.com',
+        'label.website':'Sitio web (opcional)',
+        'placeholder.website':'https://…',
+        'label.notes':'¿Algo que debamos saber? (opcional)',
+        'placeholder.notes':'Ej.: notas estacionales, reglas de concesión privada, migraciones, reintroducciones recientes, etc.',
+        'animals.title':'1. Animales — probabilidad por mes',
+        'adventures.title':'2. Experiencias — disponibilidad por mes',
+        'animals.mode_help':'Elija {yes}, {no} o {depends}. Si elige Depende, se abrirá una cuadrícula mensual para esa fila.',
+        'adventures.mode_help':'Elija {yes}, {no} o {depends}. Si elige Depende, se abrirá una cuadrícula mensual para esa fila.',
+        'mode.yes':'Sí',
+        'mode.no':'No',
+        'mode.depends':'Depende del mes',
+        'table.animal':'Animal',
+        'table.adventure':'Experiencia',
+        'table.answer':'Respuesta',
+        'table.probability':'Probabilidad',
+        'animals.help':'Los porcentajes son probabilidades típicas por huésped durante una estancia normal, no garantías.',
+        'adventures.help':'Si algo es estacional (p. ej., navegación según nivel del agua), indíquelo aquí.',
+        'submit.button':'Enviar encuesta',
+        'submit.note':'Al enviar, confirma que estas son sus mejores estimaciones hoy. Puede actualizarlas en cualquier momento.',
+        'panel.monthly':'Desglose mensual',
+        'panel.diff':'Complete solo los meses que difieran.',
+        'status.missing':'Complete su nombre, nombre del campamento/lodge y correo.',
+        'status.submitting':'Enviando sus respuestas...',
+        'status.saved':'Gracias: su encuesta se guardó correctamente. Puede actualizarla más adelante.',
+        'status.mailto':'Gracias: su aplicación de correo debería abrirse para enviar un resumen. Para resultados completos, use el endpoint configurado.',
+        'status.not_configured':'El envío aún no está configurado. Contacte a SafariMatcher para habilitar el enlace de la encuesta.',
+        'status.failed':'No pudimos enviar su encuesta. Inténtelo de nuevo o contacte al soporte de SafariMatcher.',
+        'subject.prefix':'Encuesta de Operador SafariMatcher - ',
+        'mail.note1':'NOTA: Este respaldo por correo no incluye la matriz completa.',
+        'mail.note2':'Pida a SafariMatcher habilitar un endpoint de envío seguro (recomendado).',
+        'pretty.title':'Encuesta de Operador SafariMatcher',
+        'pretty.operator':'Operador',
+        'pretty.camp':'Campamento/Lodge',
+        'pretty.email':'Correo',
+        'pretty.website':'Sitio web',
+        'pretty.notes':'Notas',
+        'pretty.animals':'Animales',
+        'pretty.adventures':'Experiencias',
+        'pretty.yes':'Sí (probabilidad única)',
+        'pretty.depends':'Depende del mes',
+        'pretty.no':'No',
+        'pretty.none':'(Sin selecciones)',
+        'pretty.submitted':'Enviado',
+        'pretty.base':'Base',
+        'pretty.overrides':'Ajustes',
+        'pretty.no_overrides':'(sin ajustes)',
+        'month.jan':'Ene','month.feb':'Feb','month.mar':'Mar','month.apr':'Abr','month.may':'May','month.jun':'Jun',
+        'month.jul':'Jul','month.aug':'Ago','month.sep':'Sep','month.oct':'Oct','month.nov':'Nov','month.dec':'Dic'
+      },
+      fr: {
+        'language.label':'Langue',
+        'language.aria_label':'Choisir la langue',
+        'topbar.tagline':'Portail opérateur • Sans pubs • Sans partenariats • Sans rétrocommissions • Sans biais',
+        'survey.title':'Enquête opérateur — Animaux et expériences',
+        'survey.intro':'Dites-nous ce que les voyageurs peuvent réellement voir et faire dans votre camp, mois par mois. Cela nous aide à vous associer à des voyageurs mieux adaptés.',
+        'details.title':'Détails du camp / lodge',
+        'details.intro':'En général 3 à 10 minutes. Renseignez l’essentiel; ignorez ce qui ne s’applique pas.',
+        'label.operator_name':'Votre nom et rôle',
+        'placeholder.operator_name':'ex. Jane Doe, Responsable réservations',
+        'label.camp_name':'Nom du camp / lodge',
+        'placeholder.camp_name':'ex. Mara Plains Camp',
+        'label.contact_email':'E-mail de contact',
+        'placeholder.contact_email':'you@example.com',
+        'label.website':'Site web (optionnel)',
+        'placeholder.website':'https://…',
+        'label.notes':'Quelque chose à signaler ? (optionnel)',
+        'placeholder.notes':'Ex. notes saisonnières, règles de concession privée, migrations, réintroductions récentes, etc.',
+        'animals.title':'1. Animaux — probabilité par mois',
+        'adventures.title':'2. Expériences — disponibilité par mois',
+        'animals.mode_help':'Choisissez {yes}, {no} ou {depends}. Si vous choisissez Dépend, une grille mensuelle s’ouvre pour cette ligne.',
+        'adventures.mode_help':'Choisissez {yes}, {no} ou {depends}. Si vous choisissez Dépend, une grille mensuelle s’ouvre pour cette ligne.',
+        'mode.yes':'Oui',
+        'mode.no':'Non',
+        'mode.depends':'Dépend du mois',
+        'table.animal':'Animal',
+        'table.adventure':'Expérience',
+        'table.answer':'Réponse',
+        'table.probability':'Probabilité',
+        'animals.help':'Les pourcentages sont des chances typiques pour un séjour — pas des garanties.',
+        'adventures.help':'Si une activité est saisonnière (ex. navigation selon le niveau d’eau), indiquez-le ici.',
+        'submit.button':'Envoyer l’enquête',
+        'submit.note':'En envoyant, vous confirmez que ce sont vos meilleures estimations à ce jour. Vous pouvez les mettre à jour à tout moment.',
+        'panel.monthly':'Détail mensuel',
+        'panel.diff':'Renseignez seulement les mois qui diffèrent.',
+        'status.missing':'Veuillez renseigner votre nom, le nom du camp/lodge et l’e-mail.',
+        'status.submitting':'Envoi de vos réponses...',
+        'status.saved':'Merci - votre enquête a bien été enregistrée. Vous pourrez la mettre à jour plus tard.',
+        'status.mailto':'Merci - votre application e-mail devrait s’ouvrir pour envoyer un résumé. Pour des résultats complets, utilisez le point d’envoi configuré.',
+        'status.not_configured':'L’envoi n’est pas encore configuré. Veuillez contacter SafariMatcher pour activer le lien d’enquête.',
+        'status.failed':'Nous n’avons pas pu envoyer votre enquête. Veuillez réessayer ou contacter le support SafariMatcher.',
+        'subject.prefix':'Enquête opérateur SafariMatcher - ',
+        'mail.note1':'REMARQUE: Ce secours e-mail n’inclut pas la matrice complète.',
+        'mail.note2':'Veuillez demander à SafariMatcher d’activer un point d’envoi sécurisé (recommandé).',
+        'pretty.title':'Enquête opérateur SafariMatcher',
+        'pretty.operator':'Opérateur',
+        'pretty.camp':'Camp/Lodge',
+        'pretty.email':'E-mail',
+        'pretty.website':'Site web',
+        'pretty.notes':'Notes',
+        'pretty.animals':'Animaux',
+        'pretty.adventures':'Expériences',
+        'pretty.yes':'Oui (probabilité unique)',
+        'pretty.depends':'Dépend du mois',
+        'pretty.no':'Non',
+        'pretty.none':'(Aucune sélection fournie)',
+        'pretty.submitted':'Soumis',
+        'pretty.base':'Base',
+        'pretty.overrides':'Ajustements',
+        'pretty.no_overrides':'(aucun ajustement)',
+        'month.jan':'Jan','month.feb':'Fév','month.mar':'Mar','month.apr':'Avr','month.may':'Mai','month.jun':'Juin',
+        'month.jul':'Juil','month.aug':'Aoû','month.sep':'Sep','month.oct':'Oct','month.nov':'Nov','month.dec':'Déc'
+      }
+    };
+
+    const i18nAnimals = {
+      es:{
+        'african-lion':'León africano','elephant':'Elefante','leopard':'Leopardo','rhinoceros':'Rinoceronte','cape-buffalo':'Búfalo cafre',
+        'cheetah':'Guepardo','spotted-hyena':'Hiena moteada','giraffe':'Jirafa','hippopotamus':'Hipopótamo','zebra':'Cebra',
+        'wildebeest':'Ñu','kudu':'Kudú','sable-antelope':'Antílope sable','giant-eland':'Elando gigante',
+        'gemsbok-oryx':'Gemsbok (Órix)','red-hartebeest-topi':'Alcélafo rojo / Topi','waterbuck':'Antílope acuático','impala':'Impala',
+        'warthog':'Facóquero','crocodile':'Cocodrilo','serval-caracal':'Serval / Caracal','baboon':'Babuino',
+        'vervet-monkey':'Mono vervet','meerkat':'Suricata','mountain-gorilla':'Gorila de montaña','chimpanzee':'Chimpancé',
+        'pangolin':'Pangolín','jackal-wild-dog':'Chacal / Perro salvaje africano','ostrich':'Avestruz','secretary-bird':'Ave secretaria'
+      },
+      fr:{
+        'african-lion':'Lion d’Afrique','elephant':'Éléphant','leopard':'Léopard','rhinoceros':'Rhinocéros','cape-buffalo':'Buffle du Cap',
+        'cheetah':'Guépard','spotted-hyena':'Hyène tachetée','giraffe':'Girafe','hippopotamus':'Hippopotame','zebra':'Zèbre',
+        'wildebeest':'Gnou','kudu':'Koudou','sable-antelope':'Antilope sable','giant-eland':'Éland géant',
+        'gemsbok-oryx':'Gemsbok (Oryx)','red-hartebeest-topi':'Bubale roux / Topi','waterbuck':'Cobe d’eau','impala':'Impala',
+        'warthog':'Phacochère','crocodile':'Crocodile','serval-caracal':'Serval / Caracal','baboon':'Babouin',
+        'vervet-monkey':'Singe vervet','meerkat':'Suricate','mountain-gorilla':'Gorille de montagne','chimpanzee':'Chimpanzé',
+        'pangolin':'Pangolin','jackal-wild-dog':'Chacal / Chien sauvage africain','ostrich':'Autruche','secretary-bird':'Messager sagittaire'
+      }
+    };
+    const i18nAdventures = {
+      es:{
+        'great-migration':'Gran migración','night-drive':'Safari nocturno','guided-walking-safari':'Safari a pie guiado',
+        'wilderness-hike':'Caminata en naturaleza','boat-pontoon-safari':'Safari en barco o pontón',
+        'mokoro-dugout-excursion':'Excursión en mokoro (canoa)','canoe-rafting-safari':'Safari en canoa o rafting',
+        'hot-air-balloon-flight':'Vuelo en globo aerostático','helicopter-safari':'Safari en helicóptero',
+        'fixed-wing-scenic-flight':'Vuelo panorámico en avioneta','horseback-safari':'Safari a caballo',
+        'animal-tracking-on-foot':'Rastreo de animales a pie','great-ape-trekking':'Trekking de grandes simios',
+        'photographic-safari-workshop':'Taller fotográfico de safari','sleep-out-fly-camping':'Noche al aire libre / fly camping',
+        'cultural-village-visit-dance':'Visita cultural con danza tradicional',
+        'multi-day-trek':'Trek de varios días (montaña o mochilero)','zip-line':'Tirolesa',
+        'trip-to-beach':'Viaje a la playa','pool':'Piscina'
+      },
+      fr:{
+        'great-migration':'Grande migration','night-drive':'Safari de nuit','guided-walking-safari':'Safari à pied guidé',
+        'wilderness-hike':'Randonnée en pleine nature','boat-pontoon-safari':'Safari en bateau ou ponton',
+        'mokoro-dugout-excursion':'Excursion en mokoro (pirogue)','canoe-rafting-safari':'Safari en canoë ou rafting',
+        'hot-air-balloon-flight':'Vol en montgolfière','helicopter-safari':'Safari en hélicoptère',
+        'fixed-wing-scenic-flight':'Vol panoramique en avion léger','horseback-safari':'Safari à cheval',
+        'animal-tracking-on-foot':'Pistage des animaux à pied','great-ape-trekking':'Trek des grands singes',
+        'photographic-safari-workshop':'Atelier photo safari','sleep-out-fly-camping':'Nuit à la belle étoile / fly camping',
+        'cultural-village-visit-dance':'Visite de village culturel et danse traditionnelle',
+        'multi-day-trek':'Trek de plusieurs jours (montagne ou sac à dos)','zip-line':'Tyrolienne',
+        'trip-to-beach':'Sortie à la plage','pool':'Piscine'
+      }
+    };
+    const animalLabelsEn = {};
+    animals.forEach(a => { animalLabelsEn[a.id] = a.label; });
+    const adventureLabelsEn = {};
+    adventures.forEach(a => { adventureLabelsEn[a.id] = a.label; });
+
+    function getLang(){
+      try{
+        const saved = localStorage.getItem(LANG_STORAGE_KEY);
+        if(saved && SUPPORTED_LANGS.includes(saved)) return saved;
+      }catch(e){}
+      return DEFAULT_LANG;
+    }
+    let currentLang = getLang();
+
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const createEl = (tag, props={}, children=[]) => {
+      const node = document.createElement(tag);
+      Object.assign(node, props);
+      children.forEach(child => node.appendChild(child));
+      return node;
+    };
+
+    function t(key, lang){
+      const active = translations[lang || currentLang] || translations.en;
+      return active[key] || translations.en[key] || key;
+    }
+    function monthLabel(monthId){ return t('month.' + monthId); }
+    function labelForItem(groupKey, itemId, fallback){
+      if(groupKey === 'animals'){
+        return (i18nAnimals[currentLang] && i18nAnimals[currentLang][itemId]) || animalLabelsEn[itemId] || fallback || itemId;
+      }
+      if(groupKey === 'adventures'){
+        return (i18nAdventures[currentLang] && i18nAdventures[currentLang][itemId]) || adventureLabelsEn[itemId] || fallback || itemId;
+      }
+      return fallback || itemId;
+    }
+    function renderModeHelp(p){
+      if(!p) return;
+      const key = p.getAttribute('data-i18n');
+      const template = t(key);
+      p.innerHTML = '';
+      const parts = template.split(/(\{yes\}|\{no\}|\{depends\})/g);
+      parts.forEach(part => {
+        if(part === '{yes}') p.appendChild(createEl('span', { className:'pill-inline pill-yes', textContent:t('mode.yes') }));
+        else if(part === '{no}') p.appendChild(createEl('span', { className:'pill-inline pill-no', textContent:t('mode.no') }));
+        else if(part === '{depends}') p.appendChild(createEl('span', { className:'pill-inline pill-yes', textContent:t('mode.depends') }));
+        else p.appendChild(document.createTextNode(part));
+      });
+    }
+    function applyI18n(lang){
+      currentLang = SUPPORTED_LANGS.includes(lang) ? lang : DEFAULT_LANG;
+      document.documentElement.setAttribute('lang', currentLang);
+      $$('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(key === 'animals.mode_help' || key === 'adventures.mode_help') return;
+        el.textContent = t(key);
+      });
+      $$('[data-i18n-placeholder]').forEach(el => {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+      $$('[data-i18n-aria-label]').forEach(el => {
+        el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
+      });
+      $$('p[data-i18n=\"animals.mode_help\"], p[data-i18n=\"adventures.mode_help\"]').forEach(renderModeHelp);
+      applyDynamicTranslations();
+      const sel = $('#languageSelect');
+      if(sel) sel.value = currentLang;
+      document.title = t('survey.title');
+    }
+    function applyDynamicTranslations(){
+      $$('tr[data-main=\"1\"]').forEach(row => {
+        const groupKey = row.dataset.group;
+        const itemId = row.dataset.itemId;
+        const labelNode = row.querySelector('.row-name');
+        if(labelNode) labelNode.textContent = labelForItem(groupKey, itemId, labelNode.textContent);
+      });
+      $$('select.mode-select').forEach(sel => {
+        const yes = sel.querySelector('option[value=\"yes\"]');
+        const no = sel.querySelector('option[value=\"no\"]');
+        const dep = sel.querySelector('option[value=\"depends\"]');
+        if(yes) yes.textContent = t('mode.yes');
+        if(no) no.textContent = t('mode.no');
+        if(dep) dep.textContent = t('mode.depends');
+      });
+      $$('.month-panel .panel-title .t').forEach(node => node.textContent = t('panel.monthly'));
+      $$('.month-panel .panel-title .hint').forEach(node => node.textContent = t('panel.diff'));
+      $$('.month-cell').forEach(cell => {
+        const mId = cell.dataset.monthId;
+        const labelNode = cell.querySelector('.m-label');
+        if(mId && labelNode) labelNode.textContent = monthLabel(mId);
+      });
+    }
+    function setLang(lang){
+      const next = SUPPORTED_LANGS.includes(lang) ? lang : DEFAULT_LANG;
+      try{ localStorage.setItem(LANG_STORAGE_KEY, next); }catch(e){}
+      applyI18n(next);
+    }
+    function verifyTranslations(){
+      const required = Object.keys(translations.en);
+      SUPPORTED_LANGS.filter(l => l !== 'en').forEach(lang => {
+        const missing = required.filter(k => !translations[lang][k]);
+        if(missing.length) console.warn('[i18n] Missing keys for', lang + ':', missing.join(', '));
+      });
+    }
+    function initLanguageSwitcher(){
+      const langSel = $('#languageSelect');
+      if(!langSel) return;
+      langSel.value = currentLang;
+      langSel.addEventListener('change', function(){
+        setLang(langSel.value);
+      });
+    }
+
+    function updateSelectColor(select){
+      select.classList.remove('prob-100','prob-75','prob-50','prob-25','prob-0');
+      switch(select.value){
+        case '100': select.classList.add('prob-100'); break;
+        case '75':  select.classList.add('prob-75');  break;
+        case '50':  select.classList.add('prob-50');  break;
+        case '25':  select.classList.add('prob-25');  break;
+        case '0':   select.classList.add('prob-0');   break;
+        default: break;
+      }
+    }
+
+    function makeProbSelect(className='prob-select'){
+      const select = createEl('select', { className });
+      const options = [
+        { value:'',   label:'—' },
+        { value:'100',label:'100%' },
+        { value:'75', label:'75%' },
+        { value:'50', label:'50%' },
+        { value:'25', label:'25%' },
+        { value:'0',  label:'0%' }
+      ];
+      options.forEach(o => {
+        select.appendChild(createEl('option', { value:o.value, textContent:o.label }));
+      });
+      select.addEventListener('change', () => updateSelectColor(select));
+      return select;
+    }
+
+    function setStatus(message, type){
+      const statusEl = $('#formStatus');
+      if(!statusEl) return;
+      statusEl.textContent = message || '';
+      statusEl.className = 'form-status' + (type ? ' ' + type : '');
+    }
+    function getProbValue(mainRow){
+      const probSel = mainRow.querySelector('select.prob-select[data-role=\"prob\"]');
+      return probSel ? (probSel.value || '') : '';
+    }
+
+    function setMonthOverrideFlag(mainRow, monthSel){
+      const prob = getProbValue(mainRow);
+      const val = monthSel.value || '';
+      if(!val){
+        monthSel.dataset.override = '';
+        return;
+      }
+      if(!prob){
+        monthSel.dataset.override = '1';
+        return;
+      }
+      monthSel.dataset.override = (val === prob) ? '' : '1';
+    }
+
+    function syncMonthsToProb(mainRow, detailRow, opts){
+      const options = opts || {};
+      const force = !!options.force;
+      const prob = getProbValue(mainRow);
+      const monthSelects = detailRow.querySelectorAll('select.prob-select[data-role=\"month\"]');
+      monthSelects.forEach(s => {
+        if(force || s.dataset.override !== '1'){
+          s.value = prob || '';
+          updateSelectColor(s);
+          if(!prob) s.value = '';
+        }
+        // If probability changed to match an override, clear override so it tracks again
+        if(s.dataset.override === '1'){
+          setMonthOverrideFlag(mainRow, s);
+        }
+      });
+    }
+
+    function applyMode(mainRow, detailRow, modeSel){
+      const mode = modeSel.value;
+      // Visual state classes
+      mainRow.classList.remove('row-mode-yes','row-mode-no','row-mode-depends');
+      detailRow.classList.remove('row-mode-yes','row-mode-no','row-mode-depends');
+      if(mode==='no'){ mainRow.classList.add('row-mode-no'); detailRow.classList.add('row-mode-no'); }
+      else if(mode==='depends'){ mainRow.classList.add('row-mode-depends'); detailRow.classList.add('row-mode-depends'); }
+      else { mainRow.classList.add('row-mode-yes'); detailRow.classList.add('row-mode-yes'); }
+
+      const prob = mainRow.querySelector('select.prob-select[data-role=\"prob\"]');
+      const monthSelects = detailRow.querySelectorAll('select.prob-select[data-role=\"month\"]');
+
+      mainRow.dataset.mode = mode;
+
+      if(mode === 'no'){
+        mainRow.classList.add('row-disabled');
+        if(prob){ prob.disabled = true; prob.value = ''; updateSelectColor(prob); }
+        monthSelects.forEach(s => { s.disabled = true; s.value = ''; s.dataset.override = ''; updateSelectColor(s); });
+        detailRow.classList.add('is-hidden');
+      } else if(mode === 'yes'){
+        mainRow.classList.remove('row-disabled');
+        if(prob) prob.disabled = false;
+        // Keep months in sync in the background so if they later switch to Depends it feels pre-filled
+        syncMonthsToProb(mainRow, detailRow, { force:false });
+        monthSelects.forEach(s => { s.disabled = true; });
+        detailRow.classList.add('is-hidden');
+      } else { // depends
+        mainRow.classList.remove('row-disabled');
+        if(prob) prob.disabled = false;
+        monthSelects.forEach(s => { s.disabled = false; });
+        // Prefill any non-overridden months with the row probability
+        syncMonthsToProb(mainRow, detailRow, { force:false });
+        detailRow.classList.remove('is-hidden');
+      }
+    }
+
+    function buildMatrix(groupKey, items, tbody){
+      tbody.innerHTML = '';
+      items.forEach(item => {
+        const mainTr = createEl('tr');
+        mainTr.dataset.group = groupKey;
+        mainTr.dataset.itemId = item.id;
+        mainTr.dataset.main = '1';
+        mainTr.dataset.mode = 'yes';
+
+        const th = createEl('th', { scope:'row', className:'sticky-col' });
+        const nameSpan = createEl('span', { className:'row-name', textContent:labelForItem(groupKey, item.id, item.label) });
+        th.appendChild(createEl('div', { className:'row-label' }, [nameSpan]));
+        mainTr.appendChild(th);
+
+        // Mode select
+        const tdMode = createEl('td');
+        const modeSel = createEl('select', { className:'mode-select' });
+        modeSel.appendChild(createEl('option', { value:'yes', textContent:t('mode.yes') }));
+        modeSel.appendChild(createEl('option', { value:'no', textContent:t('mode.no') }));
+        modeSel.appendChild(createEl('option', { value:'depends', textContent:t('mode.depends') }));
+        tdMode.appendChild(modeSel);
+        mainTr.appendChild(tdMode);
+
+        // Probability select
+        const tdProb = createEl('td');
+        const probSel = makeProbSelect('prob-select');
+        probSel.dataset.group = groupKey;
+        probSel.dataset.itemId = item.id;
+        probSel.dataset.role = 'prob';
+        tdProb.appendChild(probSel);
+        mainTr.appendChild(tdProb);
+
+        // Keep month grid synced to probability unless overridden
+        probSel.addEventListener('change', () => {
+          // Only update months that are not manually overridden
+          syncMonthsToProb(mainTr, detailTr, { force:false });
+        });
+
+        // Detail row (months)
+        const detailTr = createEl('tr', { className:'expand-row is-hidden' });
+        detailTr.dataset.group = groupKey;
+        detailTr.dataset.itemId = item.id;
+        detailTr.dataset.detail = '1';
+        const detailTd = createEl('td', { colSpan:3 });
+
+        const panelTitle = createEl('div', { className:'panel-title' }, [
+          createEl('div', { className:'t', textContent:t('panel.monthly') }),
+          createEl('div', { className:'hint', textContent:t('panel.diff') })
+        ]);
+
+        const grid = createEl('div', { className:'month-grid' });
+        months.forEach(mo => {
+          const cell = createEl('div', { className:'month-cell' });
+          cell.dataset.monthId = mo.id;
+          cell.appendChild(createEl('div', { className:'m-label', textContent: monthLabel(mo.id) }));
+          const s = makeProbSelect('prob-select');
+          s.dataset.group = groupKey;
+          s.dataset.itemId = item.id;
+          s.dataset.monthId = mo.id;
+          s.dataset.role = 'month';
+          s.disabled = true; // until depends
+          // Track overrides: if a month is changed away from the row probability, preserve it
+          s.addEventListener('change', () => {
+            setMonthOverrideFlag(mainTr, s);
+          });
+          cell.appendChild(s);
+          grid.appendChild(cell);
+        });
+
+        const panel = createEl('div', { className:'month-panel' }, [panelTitle, grid]);
+        detailTd.appendChild(panel);
+        detailTr.appendChild(detailTd);
+
+        // Wire mode behavior
+        modeSel.addEventListener('change', () => applyMode(mainTr, detailTr, modeSel));
+        // Initialize row state
+        applyMode(mainTr, detailTr, modeSel);
+
+        tbody.appendChild(mainTr);
+        tbody.appendChild(detailTr);
+      });
+    }
+    function collectGroup(groupKey){
+      const out = {};
+      const rows = document.querySelectorAll('tbody[data-group=\"' + groupKey + '\"] tr[data-main=\"1\"]');
+      rows.forEach(mainRow => {
+        const itemId = mainRow.dataset.itemId;
+        const modeSel = mainRow.querySelector('select.mode-select');
+        const mode = modeSel ? modeSel.value : 'yes';
+        const probSel = mainRow.querySelector('select.prob-select[data-role=\"prob\"]');
+        const probability = probSel ? (probSel.value || null) : null;
+
+        const detailRow = mainRow.nextElementSibling;
+        let monthsObj = {};
+        let overridesObj = {};
+        months.forEach(mo => { monthsObj[mo.id] = null; overridesObj[mo.id] = false; });
+
+        if(detailRow && detailRow.dataset.detail === '1'){
+          const sels = detailRow.querySelectorAll('select.prob-select[data-role=\"month\"]');
+          sels.forEach(s => {
+            const mId = s.dataset.monthId;
+            monthsObj[mId] = s.value || null;
+            overridesObj[mId] = (s.dataset.override === '1');
+          });
+        }
+
+        out[itemId] = {
+          mode,
+          enabled: mode !== 'no',
+          probability,
+          months: monthsObj,
+          overrides: overridesObj
+        };
+      });
+      return out;
+    }
+
+    function monthLine(monthsMap){
+      const order = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      const parts = [];
+      for(const m of order){
+        const v = monthsMap ? monthsMap[m] : null;
+        if(v !== null && v !== undefined && String(v).trim() !== ''){
+          parts.push(monthLabel(m) + ' ' + v + '%');
+        }
+      }
+      return parts.join(', ');
+    }
+
+    function buildPrettyMessage(snapshot){
+      const lines = [];
+      const push = (s='') => lines.push(s);
+
+      push(t('pretty.title'));
+      push('');
+      push(t('pretty.operator') + ': ' + (snapshot.operatorName || ''));
+      push(t('pretty.camp') + ': ' + (snapshot.campName || ''));
+      push(t('pretty.email') + ': ' + (snapshot.email || ''));
+      if(snapshot.website) push(t('pretty.website') + ': ' + snapshot.website);
+      if(snapshot.notes){
+        push('');
+        push(t('pretty.notes') + ':');
+        push(String(snapshot.notes).trim());
+      }
+
+      function section(title, groupObj, labelsMap){
+        push('');
+        push('---');
+        push(title);
+        push('');
+
+        const yesLines = [];
+        const depLines = [];
+        const noLines = [];
+
+        for(const [id, rec] of Object.entries(groupObj || {})){
+            const label = (labelsMap && labelsMap[id]) ? labelsMap[id] : id;
+            const mode = rec && rec.mode ? rec.mode : (rec && rec.enabled ? 'yes' : 'no');
+            if(mode === 'no'){
+              noLines.push(label);
+            continue;
+          }
+          if(mode === 'depends'){
+            const base = (rec && rec.probability) ? (String(rec.probability) + '%') : '—';
+            const ov = (rec && rec.overrides) ? rec.overrides : {};
+            const mm = (rec && rec.months) ? rec.months : {};
+            const parts = [];
+            const order = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+            order.forEach(mo => {
+              if(!ov[mo]) return;
+              const v = mm[mo];
+              if(v !== null && v !== undefined && String(v).trim() !== '') parts.push(monthLabel(mo) + ' ' + v + '%');
+              else parts.push(monthLabel(mo) + ' —');
+            });
+            if(parts.length) depLines.push(label + ': ' + t('pretty.base') + ' ' + base + ' | ' + t('pretty.overrides') + ': ' + parts.join(', '));
+            else depLines.push(label + ': ' + t('pretty.base') + ' ' + base + ' ' + t('pretty.no_overrides'));
+            continue;
+          }
+          // yes
+          if(rec.probability) yesLines.push(label + ': ' + rec.probability + '%');
+          else yesLines.push(label + ': —');
+        }
+
+        if(yesLines.length){
+          push(t('pretty.yes'));
+          yesLines.forEach(x => push('- ' + x));
+          push('');
+        }
+        if(depLines.length){
+          push(t('pretty.depends'));
+          depLines.forEach(x => push('- ' + x));
+          push('');
+        }
+        if(noLines.length){
+          push(t('pretty.no'));
+          push(noLines.join(', '));
+        }
+
+        if(!yesLines.length && !depLines.length && !noLines.length){
+          push(t('pretty.none'));
+        }
+      }
+
+      const animalLabels = {};
+      (snapshot._animalsList || []).forEach(x => animalLabels[x.id] = labelForItem('animals', x.id, x.label));
+      const adventureLabels = {};
+      (snapshot._adventuresList || []).forEach(x => adventureLabels[x.id] = labelForItem('adventures', x.id, x.label));
+
+      section(t('pretty.animals'), snapshot.animals, animalLabels);
+      section(t('pretty.adventures'), snapshot.adventures, adventureLabels);
+
+      push('');
+      push('---');
+      push(t('pretty.submitted') + ': ' + (snapshot.submittedAt || ''));
+
+      return lines.join('\n');
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      const animalsBody = $('#animalsBody');
+      const adventuresBody = $('#adventuresBody');
+      buildMatrix('animals', animals, animalsBody);
+      buildMatrix('adventures', adventures, adventuresBody);
+      verifyTranslations();
+      initLanguageSwitcher();
+      applyI18n(currentLang);
+
+      // Optional: prefill from query string (?operator=...&camp=...&email=...)
+      try{
+        const params = new URLSearchParams(window.location.search);
+        if(params.has('operator')){
+          const op = $('#operatorName');
+          if(op) op.value = decodeURIComponent(params.get('operator'));
+        }
+        if(params.has('camp')){
+          const camp = $('#campName');
+          if(camp) camp.value = decodeURIComponent(params.get('camp'));
+        }
+        if(params.has('email')){
+          const em = $('#contactEmail');
+          if(em) em.value = decodeURIComponent(params.get('email'));
+        }
+      }catch(e){}
+
+      const form = $('#operatorSurveyForm');
+
+      function ensureHiddenField(name, id){
+        let el = form.querySelector('input[name="' + name + '"]');
+        if(!el){
+          el = document.createElement('input');
+          el.type = 'hidden';
+          el.name = name;
+          if(id) el.id = id;
+          form.appendChild(el);
+        }
+        return el;
+      }
+
+      form.addEventListener('submit', function(event){
+        const operatorName = ($('#operatorName').value || '').trim();
+        const campName = ($('#campName').value || '').trim();
+        const email = ($('#contactEmail').value || '').trim();
+
+        if(!operatorName || !campName || !email){
+          event.preventDefault();
+          setStatus(t('status.missing'), 'error');
+          return;
+        }
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if(submitBtn) submitBtn.disabled = true;
+
+        const apiBase = (CONFIG.API_BASE || '').trim().replace(/\/$/,'');
+        const formEndpoint = (CONFIG.FORM_ENDPOINT || '').trim();
+        const mailtoTo = (CONFIG.MAILTO_FALLBACK_TO || '').trim();
+
+        let mode = '';
+        if(formEndpoint && /^https?:\/\//i.test(formEndpoint)){
+          mode = 'formspree';
+          form.setAttribute('action', formEndpoint);
+          form.setAttribute('method', 'POST');
+        }else if(apiBase && /^https?:\/\//i.test(apiBase)){
+          mode = 'api';
+        }else if(mailtoTo){
+          mode = 'mailto';
+        }else{
+          mode = 'none';
+        }
+
+        if(mode === 'formspree'){
+          const animalsFull = collectGroup('animals');
+          const adventuresFull = collectGroup('adventures');
+
+          const snapshot = {
+            operatorName,
+            campName,
+            email,
+            website: (($('#website').value || '').trim()),
+            notes: (($('#notes').value || '').trim()),
+            animals: animalsFull,
+            adventures: adventuresFull,
+            submittedAt: new Date().toISOString()
+          };
+          function compactGroup(groupObj){
+            const yes = {};
+            const depends = {};
+            const disabled = [];
+            for(const [id, rec] of Object.entries(groupObj || {})){
+              const m = rec && rec.mode ? rec.mode : (rec && rec.enabled ? 'yes' : 'no');
+              if(m === 'no'){
+                disabled.push(id);
+                continue;
+              }
+              if(m === 'depends'){
+                const mm = (rec && rec.months) ? rec.months : {};
+                const ov = (rec && rec.overrides) ? rec.overrides : {};
+                const base = rec && rec.probability ? String(rec.probability) : '';
+                const picked = {};
+                for(const [mo, v] of Object.entries(mm)){
+                  if(!ov[mo]) continue; // only months explicitly overridden
+                  if(v !== null && v !== undefined && String(v).trim() !== ''){
+                    picked[mo] = v;
+                  }else{
+                    // explicit override to blank/null
+                    picked[mo] = '';
+                  }
+                }
+                depends[id] = picked;
+              } else {
+                yes[id] = rec && rec.probability ? rec.probability : '';
+              }
+            }
+            return { yes, depends, disabled };
+          }
+
+          const a = compactGroup(animalsFull);
+          const adv = compactGroup(adventuresFull);
+
+          const compact = {
+            operatorName: snapshot.operatorName,
+            campName: snapshot.campName,
+            email: snapshot.email,
+            website: snapshot.website,
+            notes: snapshot.notes,
+            animals: { yes: a.yes, depends: a.depends },
+            adventures: { yes: adv.yes, depends: adv.depends },
+            animals_disabled: a.disabled,
+            adventures_disabled: adv.disabled,
+            submittedAt: snapshot.submittedAt
+          };
+
+          // Full normalized JSON for ChatGPT: months always present; for "yes" we copy probability to all months.
+          const fullForChatGPT = {
+            operatorName: snapshot.operatorName,
+            campName: snapshot.campName,
+            email: snapshot.email,
+            website: snapshot.website,
+            notes: snapshot.notes,
+            animals: {},
+            adventures: {},
+            animals_disabled: a.disabled || [],
+            adventures_disabled: adv.disabled || [],
+            submittedAt: snapshot.submittedAt
+          };
+          function normalize(itemsList, groupObj, out){
+            const order = months.map(x => x.id);
+            itemsList.forEach(it => {
+              const rec = groupObj ? groupObj[it.id] : null;
+              if(!rec) return;
+              const m = rec.mode || (rec.enabled ? 'yes' : 'no');
+              if(m === 'no') return;
+              const prob = rec.probability || null;
+              const mm = {};
+              if(m === 'yes'){
+                order.forEach(k => { mm[k] = prob; });
+              }else{
+                const src = rec.months || {};
+                const ov = rec.overrides || {};
+                order.forEach(k => {
+                  if(ov[k]){
+                    const v = src[k];
+                    mm[k] = (v !== undefined && v !== null && String(v).trim() !== '') ? String(v) : null;
+                  }else{
+                    mm[k] = prob;
+                  }
+                });
+              }
+              out[it.id] = { mode: m, probability: prob, months: mm };
+            });
+          }
+
+          normalize(animals, animalsFull, fullForChatGPT.animals);
+          normalize(adventures, adventuresFull, fullForChatGPT.adventures);
+
+          ensureHiddenField('_subject').value = t('subject.prefix') + campName;
+          ensureHiddenField('_replyto').value = email;
+
+          // Compact + readable
+          ensureHiddenField('matrix_json','matrix_json').value = JSON.stringify(compact, null, 2);
+          // Full normalized
+          ensureHiddenField('full_json').value = JSON.stringify(fullForChatGPT, null, 2);
+
+          // Human-friendly summary
+          try{
+            snapshot._animalsList = animals;
+            snapshot._adventuresList = adventures;
+            const msgEl = document.getElementById('messageField');
+            if(msgEl) msgEl.value = buildPrettyMessage(snapshot);
+            ensureHiddenField('summary').value = (msgEl && msgEl.value) ? msgEl.value : '';
+          }catch(e){}
+
+          setStatus(t('status.submitting'), '');
+          setTimeout(() => { if(submitBtn) submitBtn.disabled = false; }, 8000);
+          return; // allow native POST
+        }
+
+        event.preventDefault();
+
+        (async () => {
+          try{
+            if(mode === 'api'){
+              setStatus(t('status.submitting'), '');
+              const submitUrl = apiBase + '/api/operator-survey';
+              const payload = {
+                operatorName,
+                campName,
+                email,
+                website: (($('#website').value || '').trim()),
+                notes: (($('#notes').value || '').trim()),
+                animals: collectGroup('animals'),
+                adventures: collectGroup('adventures'),
+                meta: {
+                  source: 'operator-survey-probability-v2',
+                  userAgent: navigator.userAgent,
+                  submittedAt: new Date().toISOString()
+                }
+              };
+
+              const resp = await fetch(submitUrl, {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+                body: JSON.stringify(payload)
+              });
+
+              if(!resp.ok){
+                let detail = '';
+                try{ detail = await resp.text(); }catch(e){}
+                throw new Error('Bad response: ' + resp.status + (detail ? ' - ' + detail : ''));
+              }
+
+              setStatus(t('status.saved'), 'ok');
+
+            }else if(mode === 'mailto'){
+              const subject = encodeURIComponent(t('subject.prefix') + campName);
+              const bodyLines = [
+                t('pretty.operator') + ': ' + operatorName,
+                t('pretty.camp') + ': ' + campName,
+                t('pretty.email') + ': ' + email,
+                t('pretty.website') + ': ' + (($('#website').value || '').trim()),
+                t('pretty.notes') + ': ' + (($('#notes').value || '').trim()),
+                '',
+                t('mail.note1'),
+                t('mail.note2')
+              ];
+              const body = encodeURIComponent(bodyLines.join('\n'));
+              window.location.href = 'mailto:' + mailtoTo + '?subject=' + subject + '&body=' + body;
+              setStatus(t('status.mailto'), 'ok');
+
+            }else{
+              setStatus(t('status.not_configured'), 'error');
+            }
+          }catch(err){
+            console.error(err);
+            setStatus(t('status.failed'), 'error');
+          }finally{
+            if(submitBtn) submitBtn.disabled = false;
+          }
+        })();
+      });
+    });
+  })();
+</script>
+</body>
+</html>
